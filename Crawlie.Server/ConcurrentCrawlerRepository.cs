@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace Crawlie.Server.IntegrationTests
+namespace Crawlie.Server
 {
-    class ConcurrentCrawlerRepository : ICrawlerRepository
+    public class ConcurrentCrawlerRepository : ICrawlerRepository
     {
         private readonly ConcurrentDictionary<string, CrawlerJobInfo> _jobCollection = new ConcurrentDictionary<string, CrawlerJobInfo>();
         

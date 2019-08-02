@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Crawlie.Server.IntegrationTests
+namespace Crawlie.Server
 {
     public class CrawlerWorker
     {

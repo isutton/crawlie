@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Html.Dom;
 
-namespace Crawlie.Server.IntegrationTests
+namespace Crawlie.Server
 {
     public interface ICrawlerEngine
     {

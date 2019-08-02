@@ -1,6 +1,6 @@
 using System;
 
-namespace Crawlie.Server.IntegrationTests
+namespace Crawlie.Server
 {
     public class CrawlerJobRequest
     {

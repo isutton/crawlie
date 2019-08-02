@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Crawlie.Server.IntegrationTests
+namespace Crawlie.Server
 {
     public interface ICrawlerRepository
     {

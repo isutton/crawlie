@@ -1,4 +1,4 @@
-namespace Crawlie.Server.IntegrationTests
+namespace Crawlie.Server
 {
     public interface ICrawlerWorkerQueue
     {

@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 
-namespace Crawlie.Server.IntegrationTests
+namespace Crawlie.Server
 {
-    class DefaultCrawlerWorkerQueue : ICrawlerWorkerQueue
+    public class DefaultCrawlerWorkerQueue : ICrawlerWorkerQueue
     {
         private readonly BlockingCollection<string> _workerQueue = new BlockingCollection<string>();
         

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Crawlie.Server.IntegrationTests
+namespace Crawlie.Server
 {
     public class CrawlerJobResponse
     {
