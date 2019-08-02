@@ -2,12 +2,12 @@ using System.Threading.Tasks;
 
 namespace Crawlie.Server
 {
-    public class CrawlerService
+    public class DefaultCrawlerJobService : ICrawlerJobService
     {
         private readonly ICrawlerRepository _repository;
         private readonly ICrawlerWorkerQueue _workerQueue;
 
-        public CrawlerService(
+        public DefaultCrawlerJobService(
             ICrawlerRepository repository,
             ICrawlerWorkerQueue workerQueue)
         {
@@ -21,7 +21,7 @@ namespace Crawlie.Server
             if (existingJobInfo != null)
                 // Requested URL is in progress or finished, map jobInfo
                 // to a response.
-                return new CrawlerJobResponse(existingJobInfo);
+                return CrawlerJobResponse.NewFromExistingJobInfo(existingJobInfo);
 
             // Requested URL is new, so add the job request to the
             // repository for the results to be collected later and
@@ -30,7 +30,7 @@ namespace Crawlie.Server
             _workerQueue.Add(jobRequest.Uri.ToString());
 
 
-            return new CrawlerJobResponse(addedJobInfo);
+            return CrawlerJobResponse.NewFromExistingJobInfo(addedJobInfo);
         }
     }
 }

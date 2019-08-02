@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Crawlie.Server
 {
@@ -11,16 +12,25 @@ namespace Crawlie.Server
             {CrawlerJobInfo.WorkerStatus.InProgress, JobStatus.InProgress},
             {CrawlerJobInfo.WorkerStatus.Complete, JobStatus.Complete}
         };
-        
-        public CrawlerJobResponse(CrawlerJobInfo existingJobInfo)
-        {
-            Id = existingJobInfo.Id;
-            Status = StatusMapping[existingJobInfo.Status];
-            Result = existingJobInfo.Result;
-        }
 
+        public static CrawlerJobResponse NewFromExistingJobInfo(CrawlerJobInfo existingJobInfo)
+        {
+            var status = StatusMapping
+                .TryGetValue(existingJobInfo.Status, out var mappedStatus) 
+                ? mappedStatus 
+                : JobStatus.Unknown;
+
+            return new CrawlerJobResponse
+            {
+                Id = existingJobInfo.Id,
+                Status = status,
+                Result = existingJobInfo.Result
+            };
+        }
+        
         public enum JobStatus
         {
+            Unknown = 0,
             Accepted = 1,
             InProgress = 2,
             Complete = 3
@@ -30,6 +40,7 @@ namespace Crawlie.Server
         
         public JobStatus Status { get; set; } 
         
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public List<Uri> Result { get; set; }
     }
 }

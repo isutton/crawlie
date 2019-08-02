@@ -14,14 +14,14 @@ namespace Crawlie.Server.IntegrationTests
         {
             // Arrange
             var resultList = new List<Uri> {new Uri("https://www.redhat.com")};
-            var repository = new ConcurrentCrawlerRepository(new CrawlerJobInfo
+            var repository = ConcurrentCrawlerRepository.NewWithExistingJobs(new CrawlerJobInfo
             {
                 Id = "https://www.redhat.com/en/topics/cloud",
                 Status = CrawlerJobInfo.WorkerStatus.Complete,
                 Result = resultList
             });
             var workerQueue = new DefaultCrawlerWorkerQueue();
-            var crawlerService = new CrawlerService(repository, workerQueue);
+            var crawlerService = new DefaultCrawlerJobService(repository, workerQueue);
             var jobRequest = new CrawlerJobRequest
             {
                 Uri = new Uri("https://www.redhat.com/en/topics/cloud")
@@ -43,7 +43,7 @@ namespace Crawlie.Server.IntegrationTests
             
             var repository = new ConcurrentCrawlerRepository();
             var workerQueueMock = new Mock<ICrawlerWorkerQueue>();
-            var crawlerService = new CrawlerService(repository, workerQueueMock.Object);
+            var crawlerService = new DefaultCrawlerJobService(repository, workerQueueMock.Object);
             var jobRequest = new CrawlerJobRequest
             {
                 Uri = new Uri(jobId)
@@ -64,14 +64,14 @@ namespace Crawlie.Server.IntegrationTests
             // Arrange
             const string jobId = "https://www.redhat.com/en/topics/cloud";
             
-            var repository = new ConcurrentCrawlerRepository(new CrawlerJobInfo
+            var repository = ConcurrentCrawlerRepository.NewWithExistingJobs(new CrawlerJobInfo
             {
                 Id = jobId,
                 Status = CrawlerJobInfo.WorkerStatus.Accepted
             });
             var workerQueue = new Mock<ICrawlerWorkerQueue>();
             workerQueue.Setup(w => w.Add(jobId));
-            var crawlerService = new CrawlerService(repository, workerQueue.Object);
+            var crawlerService = new DefaultCrawlerJobService(repository, workerQueue.Object);
             var jobRequest = new CrawlerJobRequest
             {
                 Uri = new Uri(jobId)

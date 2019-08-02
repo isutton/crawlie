@@ -8,15 +8,23 @@ namespace Crawlie.Server
     public class ConcurrentCrawlerRepository : ICrawlerRepository
     {
         private readonly ConcurrentDictionary<string, CrawlerJobInfo> _jobCollection = new ConcurrentDictionary<string, CrawlerJobInfo>();
-        
-        public ConcurrentCrawlerRepository(params CrawlerJobInfo[] existingJobs)
+
+        public static ConcurrentCrawlerRepository NewWithExistingJobs(params CrawlerJobInfo[] existingJobs)
+        {
+            var repository = new ConcurrentCrawlerRepository();
+            repository.TryAddRange(existingJobs);
+            return repository;
+        }
+
+        private void TryAddRange(CrawlerJobInfo[] existingJobs)
         {
             foreach (var jobInfo in existingJobs)
             {
                 _jobCollection.TryAdd(jobInfo.Id, jobInfo);
             }
         }
-        
+
+       
         public Task<CrawlerJobInfo> GetJobInfoAsync(CrawlerJobRequest jobRequest)
         {
             var jobId = jobRequest.Uri.ToString();
