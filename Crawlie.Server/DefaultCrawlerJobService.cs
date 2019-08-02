@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace Crawlie.Server
@@ -31,6 +32,16 @@ namespace Crawlie.Server
 
 
             return CrawlerJobResponse.NewFromExistingJobInfo(addedJobInfo);
+        }
+
+        public async Task<CrawlerJobResponse> GetJobInfo(string jobId)
+        {
+            var jobInfo = await _repository.GetJobInfoAsync(new CrawlerJobRequest()
+            {
+                Uri = new Uri(jobId)
+            });
+
+            return CrawlerJobResponse.NewFromExistingJobInfo(jobInfo);
         }
     }
 }

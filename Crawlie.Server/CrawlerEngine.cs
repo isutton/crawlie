@@ -27,11 +27,14 @@ namespace Crawlie.Server
 
             var documentLinks = document
                 .QuerySelectorAll("a")
-                .SelectMany(e => e is IHtmlAnchorElement anchorElement
-                    ? new List<Uri> {new Uri(anchorElement.Href)}
-                    : new List<Uri>());
+                .SelectMany(e =>
+                    e is IHtmlAnchorElement anchorElement && !string.IsNullOrWhiteSpace(anchorElement.Href)
+                        ? new List<Uri> {new Uri(anchorElement.Href)}
+                        : new List<Uri>())
+                .Where(u => u.Host == baseUrl)
+                .ToList();
 
-            return documentLinks.Where(u => u.Host == baseUrl).ToList();
+            return documentLinks;
         }
     }
 }

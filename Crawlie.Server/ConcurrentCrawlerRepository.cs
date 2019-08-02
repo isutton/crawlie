@@ -23,12 +23,16 @@ namespace Crawlie.Server
                 _jobCollection.TryAdd(jobInfo.Id, jobInfo);
             }
         }
-
        
         public Task<CrawlerJobInfo> GetJobInfoAsync(CrawlerJobRequest jobRequest)
         {
-            var jobId = jobRequest.Uri.ToString();
-            return Task.FromResult(_jobCollection.TryGetValue(jobId, out var jobInfo) ? jobInfo : null);
+            var jobId = jobRequest.Uri.ToString().TrimEnd('/');
+            if (_jobCollection.TryGetValue(jobId, out var jobInfo))
+            {
+                return Task.FromResult(jobInfo);
+            }
+
+            return Task.FromResult<CrawlerJobInfo>(null);
         }
 
         public Task<CrawlerJobInfo> AddJobRequestAsync(CrawlerJobRequest jobRequest)
@@ -42,14 +46,14 @@ namespace Crawlie.Server
             return Task.FromResult(_jobCollection.TryAdd(jobRequest.Uri.ToString(), jobInfo) ? jobInfo : null);
         }
 
-        public Task CompleteJobAsync(string jobId, List<Uri> documentLinks)
+        public void CompleteJob(string jobId, List<Uri> documentLinks)
         {
             if (_jobCollection.TryGetValue(jobId, out var jobInfo))
             {
                 var newJobInfo = new CrawlerJobInfo()
                 {
                     Id = jobInfo.Id,
-                    Status = jobInfo.Status,
+                    Status = CrawlerJobInfo.WorkerStatus.Complete,
                     Result = documentLinks
                 };
 
@@ -58,8 +62,6 @@ namespace Crawlie.Server
                     throw new NotImplementedException();
                 }
             }
-
-            return Task.CompletedTask;
         }
     }
 }

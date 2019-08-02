@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crawlie.Server.Jobs
@@ -20,6 +21,15 @@ namespace Crawlie.Server.Jobs
         {
             var jobResponse = await _crawlerJobService.HandleJobRequest(jobRequest);
             return Ok(jobResponse);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<CrawlerJobResponse>> GetJobInfo([FromQuery] string jobId)
+        {
+            var jobResponse = await _crawlerJobService.GetJobInfo(jobId);
+            return jobResponse == null 
+                ? (ActionResult) NotFound() 
+                : Ok(jobResponse);
         }
     }
 }

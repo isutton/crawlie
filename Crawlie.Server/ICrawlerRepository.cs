@@ -10,6 +10,6 @@ namespace Crawlie.Server
         
         Task<CrawlerJobInfo> AddJobRequestAsync(CrawlerJobRequest jobRequest);
         
-        Task CompleteJobAsync(string jobId, List<Uri> documentLinks);
+        void CompleteJob(string jobId, List<Uri> documentLinks);
     }
 }

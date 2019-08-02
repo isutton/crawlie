@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Crawlie.Server
 {
@@ -11,9 +13,16 @@ namespace Crawlie.Server
             _workerQueue.Add(uriString);
         }
 
-        public string Take()
+        public string Take(CancellationToken cancellationToken)
         {
-            return _workerQueue.Take();
+            try
+            {
+                return _workerQueue.Take(cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
+            }
         }
     }
 }
