@@ -1,18 +1,39 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Crawlie.Contracts;
 using Crawlie.Server;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Crawlie.Client.IntegrationTests
 {
+    public class FakeHttpClientFactory : IHttpClientFactory, IDisposable
+    {
+        private readonly HttpClient _httpClient;
+
+        public FakeHttpClientFactory(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public HttpClient CreateClient(string name = "")
+        {
+            return _httpClient;
+        }
+
+        public void Dispose()
+        {
+            _httpClient?.Dispose();
+        }
+    }
+
     public class ClientTests : IClassFixture<WebApplicationFactory<Startup>>
     {
         private readonly WebApplicationFactory<Startup> _factory;
@@ -25,25 +46,36 @@ namespace Crawlie.Client.IntegrationTests
         [Fact]
         public async Task SubmitJobRequest_NewJob_ShouldReturnInProgress()
         {
-            using (var httpClient = _factory.CreateClient())
+            // Arrange
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    {"CrawlerClientOptions:BaseAddress", "https://localhost:5001"}
+                })
+                .Build();
+
+            var crawlerClient =
+                Program
+                    .CreateHostBuilder(configuration)
+                    .ConfigureServices((ctx, services) =>
+                    {
+                        services.AddSingleton<IHttpClientFactory>(provider =>
+                            new FakeHttpClientFactory(_factory.CreateClient()));
+                    })
+                    .Build()
+                    .Services
+                    .GetService<CrawlerClient>();
+
+            var jobRequest = new CrawlerJobRequest
             {
-                // Arrange
-                var crawlerClientConfiguration = new CrawlerClientConfiguration()
-                {
-                    BaseAddress = new Uri("https://localhost:5001")
-                };
-                var crawlerClient = new CrawlerClient(httpClient, crawlerClientConfiguration);
-                var jobRequest = new CrawlerJobRequest()
-                {
-                    Uri = new Uri("https://foobar.com")
-                };
+                Uri = new Uri("https://foobar.com")
+            };
 
-                // Act
-                var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
+            // Act
+            var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
 
-                // Assert
-                jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
-            }
+            // Assert
+            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
         }
 
         [Fact]
@@ -73,22 +105,33 @@ namespace Crawlie.Client.IntegrationTests
                 })
                 .CreateClient();
 
-            using (httpClient)
-            {
-                // Arrange
-                var crawlerClientConfiguration = new CrawlerClientConfiguration()
+            // Arrange
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    BaseAddress = new Uri("https://localhost:5001")
-                };
-                var crawlerClient = new CrawlerClient(httpClient, crawlerClientConfiguration);
-                var jobRequest = new CrawlerJobRequest {Uri = targetUri};
+                    {"CrawlerClientOptions:BaseAddress", "https://localhost:5001"}
+                })
+                .Build();
 
-                // Act
-                var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
+            var crawlerClient =
+                Program
+                    .CreateHostBuilder(configuration)
+                    .ConfigureServices((ctx, services) =>
+                    {
+                        services.AddSingleton<IHttpClientFactory>(provider =>
+                            new FakeHttpClientFactory(httpClient));
+                    })
+                    .Build()
+                    .Services
+                    .GetService<CrawlerClient>();
 
-                // Assert
-                jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
-            }
+            var jobRequest = new CrawlerJobRequest {Uri = targetUri};
+
+            // Act
+            var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
+
+            // Assert
+            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
         }
 
         [Fact]
@@ -118,45 +161,68 @@ namespace Crawlie.Client.IntegrationTests
                 })
                 .CreateClient();
 
-            using (httpClient)
+            // Arrange
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    {"CrawlerClientOptions:BaseAddress", "https://localhost:5001"}
+                })
+                .Build();
+
+            var crawlerClient =
+                Program
+                    .CreateHostBuilder(configuration)
+                    .ConfigureServices((ctx, services) =>
+                    {
+                        services.AddSingleton<IHttpClientFactory>(provider =>
+                            new FakeHttpClientFactory(httpClient));
+                    })
+                    .Build()
+                    .Services
+                    .GetService<CrawlerClient>();
+
+            var jobRequest = new CrawlerJobRequest
             {
-                // Arrange
-                var crawlerClientConfiguration = new CrawlerClientConfiguration()
-                {
-                    BaseAddress = new Uri("https://localhost:5001")
-                };
-                var crawlerClient = new CrawlerClient(httpClient, crawlerClientConfiguration);
-                var jobRequest = new CrawlerJobRequest()
-                {
-                    Uri = targetUri
-                };
+                Uri = targetUri
+            };
 
-                // Act
-                var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
+            // Act
+            var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
 
-                // Assert
-                jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.Complete);
-            }
+            // Assert
+            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.Complete);
         }
 
         [Fact]
-        public void GetJobRequest_UnknownJob_ShouldReturnNotFound()
+        public async Task GetJobRequest_UnknownJob_ShouldReturnNotFound()
         {
             var targetUri = new Uri("https://getjobrequest-unknownjob.com");
 
-            using (var httpClient = _factory.CreateClient())
-            {
-                // Arrange
-                var crawlerClientConfiguration = new CrawlerClientConfiguration()
+            // Arrange
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    BaseAddress = new Uri("https://localhost:5001")
-                };
-                var crawlerClient = new CrawlerClient(httpClient, crawlerClientConfiguration);
-                Func<Task> act = async () => await crawlerClient.GetJobRequestAsync(targetUri);
+                    {"CrawlerClientOptions:BaseAddress", "https://localhost:5001"}
+                })
+                .Build();
 
-                // Act
-                act.Should().Throw<HttpRequestException>();
-            }
+            var crawlerClient =
+                Program
+                    .CreateHostBuilder(configuration)
+                    .ConfigureServices((ctx, services) =>
+                    {
+                        services.AddSingleton<IHttpClientFactory>(provider =>
+                            new FakeHttpClientFactory(_factory.CreateClient()));
+                    })
+                    .Build()
+                    .Services
+                    .GetService<CrawlerClient>();
+
+            // Act
+            var jobResponse = await crawlerClient.GetJobRequestAsync(targetUri, CancellationToken.None);
+
+            // Assert
+            jobResponse.Should().BeNull();
         }
 
         [Fact]
@@ -185,22 +251,33 @@ namespace Crawlie.Client.IntegrationTests
                 })
                 .CreateClient();
 
-            using (httpClient)
-            {
-                // Arrange
-                var crawlerClientConfiguration = new CrawlerClientConfiguration()
+            // Arrange
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    BaseAddress = new Uri("https://localhost:5001")
-                };
-                var crawlerClient = new CrawlerClient(httpClient, crawlerClientConfiguration);
+                    {"CrawlerClientOptions:BaseAddress", "https://localhost:5001"}
+                })
+                .Build();
 
-                // Act
-                var jobResponse = await crawlerClient.GetJobRequestAsync(targetUri);
+            var crawlerClient =
+                Program
+                    .CreateHostBuilder(configuration)
+                    .ConfigureServices((ctx, services) =>
+                    {
+                        services.AddSingleton<IHttpClientFactory>(provider =>
+                            new FakeHttpClientFactory(httpClient));
+                    })
+                    .Build()
+                    .Services
+                    .GetService<CrawlerClient>();
 
-                // Assert
-                jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
-            }
+            // Act
+            var jobResponse = await crawlerClient.GetJobRequestAsync(targetUri, CancellationToken.None);
+
+            // Assert
+            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
         }
+
 
         [Fact]
         public async Task GetJobRequest_FinishedJob_ShouldReturnComplete()
@@ -229,21 +306,31 @@ namespace Crawlie.Client.IntegrationTests
                 })
                 .CreateClient();
 
-            using (httpClient)
-            {
-                // Arrange
-                var crawlerClientConfiguration = new CrawlerClientConfiguration()
+            // Arrange
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    BaseAddress = new Uri("https://localhost:5001")
-                };
-                var crawlerClient = new CrawlerClient(httpClient, crawlerClientConfiguration);
+                    {"CrawlerClientOptions:BaseAddress", "https://localhost:5001"}
+                })
+                .Build();
 
-                // Act
-                var jobResponse = await crawlerClient.GetJobRequestAsync(targetUri);
+            var crawlerClient =
+                Program
+                    .CreateHostBuilder(configuration)
+                    .ConfigureServices((ctx, services) =>
+                    {
+                        services.AddSingleton<IHttpClientFactory>(provider =>
+                            new FakeHttpClientFactory(httpClient));
+                    })
+                    .Build()
+                    .Services
+                    .GetService<CrawlerClient>();
 
-                // Assert
-                jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.Complete);
-            }
+            // Act
+            var jobResponse = await crawlerClient.GetJobRequestAsync(targetUri, CancellationToken.None);
+
+            // Assert
+            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.Complete);
         }
     }
 }

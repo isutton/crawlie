@@ -1,23 +1,31 @@
 using System;
+using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Crawlie.Contracts;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Crawlie.Client
 {
-    public class CrawlerClient
+    public class CrawlerClient : IDisposable
     {
+        private readonly ILogger<CrawlerClient> _logger;
         private readonly HttpClient _httpClient;
 
         public CrawlerClient(
-            HttpClient httpClient, 
-            CrawlerClientConfiguration crawlerClientConfiguration)
+            HttpClient httpClient,
+            ILogger<CrawlerClient> logger,
+            IOptions<CrawlerClientOptions> crawlerClientConfiguration)
         {
+            _logger = logger;
             _httpClient = httpClient;
-
-            _httpClient.BaseAddress = crawlerClientConfiguration.BaseAddress;
+            _httpClient.BaseAddress = crawlerClientConfiguration.Value.BaseAddress;
+            _httpClient.Timeout = TimeSpan.FromSeconds(2.0);
         }
 
         public async Task<CrawlerJobResponse> SubmitJobRequest(CrawlerJobRequest jobRequest)
@@ -38,18 +46,40 @@ namespace Crawlie.Client
             return jobResponse;
         }
 
-        public async Task<CrawlerJobResponse> GetJobRequestAsync(Uri targetUri)
+        public async Task<CrawlerJobResponse> GetJobRequestAsync(Uri targetUri, CancellationToken cancellationToken)
         {
-            var response =
-                await _httpClient.GetAsync((string) QueryHelpers.AddQueryString("api/CrawlerJob", "jobId",
-                    targetUri.ToString()));
+            try
+            {
+                var response =
+                    await _httpClient.GetAsync(
+                        QueryHelpers.AddQueryString(
+                            "api/CrawlerJob", "jobId", targetUri.ToString()),
+                        cancellationToken);
 
-            response.EnsureSuccessStatusCode();
+                if (response.StatusCode == HttpStatusCode.NotFound) return null;
 
-            var serializedJobResponse = await response.Content.ReadAsStringAsync();
-            var jobResponse = JsonConvert.DeserializeObject<CrawlerJobResponse>(serializedJobResponse);
+                response.EnsureSuccessStatusCode();
 
-            return jobResponse;
+                var serializedJobResponse = await response.Content.ReadAsStringAsync();
+                var jobResponse = JsonConvert.DeserializeObject<CrawlerJobResponse>(serializedJobResponse);
+
+                return jobResponse;
+            }
+            catch (TaskCanceledException e)
+            {
+                _logger.LogError(e, e.Message);
+                throw new CrawlerTimeoutException();
+            }
+            catch (OperationCanceledException e)
+            {
+                _logger.LogError(e, e.Message);
+                throw;
+            }
+        }
+
+        public void Dispose()
+        {
+            _httpClient?.Dispose();
         }
     }
 }

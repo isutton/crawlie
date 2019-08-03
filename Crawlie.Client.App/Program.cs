@@ -1,41 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using CommandLine;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Crawlie.Client
 {
-    class Program
+    public class Program
     {
-        private class Options
+        public static IHostBuilder CreateHostBuilder(IConfiguration configuration)
         {
-            [Option('v', "verbose", Required = false, HelpText = "Set output to verbose messages.")]
-            public bool Verbose { get; set; }
-
-            [Option('c', "hostname", Required = false, HelpText = "Set the Crawlie server to submit requests.")]
-            public string ServerHostname { get; set; } = "https://localhost:5001";
-            
-            [Value(0, Required = true, HelpText = "The URL to process.")]
-            public string Url { get; set; }
+            var hostBuilder = new HostBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddOptions();
+                    services.Configure<RunnerOptions>(configuration.GetSection("RunnerOptions"));
+                    services.Configure<CrawlerClientOptions>(configuration.GetSection("CrawlerClientOptions"));
+                    services.AddLogging();
+                    services.AddTransient<CrawlerClient>();
+                    services.AddTransient<Runner>();
+                    services.AddHttpClient<CrawlerClient>()
+                        .ConfigurePrimaryHttpMessageHandler(() =>
+                            new HttpClientHandler
+                            {
+                                ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true
+                            })
+                        .ConfigureHttpClient(client => { client.BaseAddress = new Uri("https://localhost:5001"); });
+                });
+            return hostBuilder;
         }
 
-        static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            Parser.Default
-                .ParseArguments<Options>(args)
-                .WithParsed(async o =>
-                {
-                    var httpClient = new HttpClient();
-                    var crawlerClientConfiguration = new CrawlerClientConfiguration()
-                    {
-                        BaseAddress = new Uri(o.ServerHostname)
-                    };
-                    var crawlerClient = new CrawlerClient(httpClient, crawlerClientConfiguration);
+            var configuration = new ConfigurationBuilder().AddCommandLine(args).Build();
 
-                    var jobResponse = await crawlerClient.GetJobRequestAsync(new Uri(o.Url));
-                    
-                    Console.WriteLine("Hello World!");
-                });
+            var host =
+                CreateHostBuilder(configuration)
+                    .Build();
+
+            var runner = host.Services.GetService<Runner>();
+            await runner.Run();
         }
     }
 }
