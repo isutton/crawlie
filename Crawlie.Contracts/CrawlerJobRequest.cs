@@ -1,6 +1,6 @@
 using System;
 
-namespace Crawlie.Server
+namespace Crawlie.Contracts
 {
     public class CrawlerJobRequest
     {

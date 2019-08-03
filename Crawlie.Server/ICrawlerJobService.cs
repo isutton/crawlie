@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Crawlie.Contracts;
 
 namespace Crawlie.Server
 {

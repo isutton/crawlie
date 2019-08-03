@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using System.Web;
+using Crawlie.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Crawlie.Server.Jobs

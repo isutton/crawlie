@@ -12,4 +12,8 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Crawlie.Contracts\Crawlie.Contracts.csproj" />
+    </ItemGroup>
+
 </Project>

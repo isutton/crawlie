@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Crawlie.Contracts;
 
 namespace Crawlie.Server
 {
@@ -22,7 +23,7 @@ namespace Crawlie.Server
             if (existingJobInfo != null)
                 // Requested URL is in progress or finished, map jobInfo
                 // to a response.
-                return CrawlerJobResponse.NewFromExistingJobInfo(existingJobInfo);
+                return CrawlerJobResponseUtility.NewFromExistingJobInfo(existingJobInfo);
 
             // Requested URL is new, so add the job request to the
             // repository for the results to be collected later and
@@ -30,7 +31,7 @@ namespace Crawlie.Server
             var addedJobInfo = await _repository.AddJobRequestAsync(jobRequest);
             _workerQueue.Add(jobRequest.Uri);
 
-            return CrawlerJobResponse.NewFromExistingJobInfo(addedJobInfo);
+            return CrawlerJobResponseUtility.NewFromExistingJobInfo(addedJobInfo);
         }
 
         public async Task<CrawlerJobResponse> GetJobInfo(string jobId)
@@ -39,7 +40,7 @@ namespace Crawlie.Server
 
 
             return
-                jobInfo != null ? CrawlerJobResponse.NewFromExistingJobInfo(jobInfo) : null;
+                jobInfo != null ? CrawlerJobResponseUtility.NewFromExistingJobInfo(jobInfo) : null;
         }
     }
 }
