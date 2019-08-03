@@ -1,8 +1,10 @@
+dist: bionic
+
 language: csharp
 solution: crawlie.sln
 
 mono: none
-dotnet: 2.2.0
+dotnet: 2.2.401
 
 services:
   - docker
