@@ -51,7 +51,7 @@ namespace Crawlie.Server
 
             // This is the glue between ASP.NET host and the CrawlerWorker
             // processes.
-            services.AddTransient<ICrawlerBackgroundService, CrawlerBackgroundService>();
+            services.AddHostedService<CrawlerBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

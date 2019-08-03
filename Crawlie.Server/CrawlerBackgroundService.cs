@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Crawlie.Server
 {
@@ -25,28 +26,34 @@ namespace Crawlie.Server
     
     public class CrawlerBackgroundService : ICrawlerBackgroundService
     {
-        private readonly ICrawlerWorkerQueue _workerQueue;
+        private readonly ILogger<CrawlerBackgroundService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private DefaultCrawlerSupervisor _supervisor;
 
         public CrawlerBackgroundService(
-            ICrawlerWorkerQueue workerQueue,
+            ILogger<CrawlerBackgroundService> logger,
             IServiceProvider serviceProvider)
         {
-            _workerQueue = workerQueue;
+            _logger = logger;
             _serviceProvider = serviceProvider;
         }
         
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _supervisor = ActivatorUtilities.CreateInstance<DefaultCrawlerSupervisor>(_serviceProvider, cancellationToken);
-            
-            return _supervisor.StartAsync();
+
+            var executingTask = _supervisor.ExecuteAsync();
+
+            _logger.LogInformation("Supervisor started");
+
+            return executingTask.IsCompleted ? executingTask : Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
-            return _supervisor.StopAsync(cancellationToken);
+            _logger.LogInformation("Stopping supervisor.");
+            
+            await _supervisor.StopAsync(cancellationToken);
         }
     }
 }

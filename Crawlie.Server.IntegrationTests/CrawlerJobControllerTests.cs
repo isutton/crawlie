@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
@@ -36,7 +37,8 @@ namespace Crawlie.Server.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         services.AddTransient<IDocumentFetcher, TestDocumentFetcher>();
-                        services.AddTransient<ICrawlerBackgroundService, NoopCrawlerBackgroundService>();
+                        services.Remove(new ServiceDescriptor(typeof(CrawlerBackgroundService),
+                            typeof(CrawlerBackgroundService), ServiceLifetime.Transient));
                     });
                 })
                 .CreateClient();
@@ -63,15 +65,22 @@ namespace Crawlie.Server.IntegrationTests
                 {
                     builder.ConfigureTestServices(services =>
                     {
-                        var repository = ConcurrentCrawlerRepository.NewWithExistingJobs(
-                            new CrawlerJobInfo
+                        var loggerFactory = new LoggerFactory();
+                        var repository =
+                            new ConcurrentCrawlerRepository();
+                        repository.TryAddRange(new[]
                             {
-                                Id = "https://foobar.com",
-                                Result = new List<Uri>(),
-                                Status = CrawlerJobInfo.WorkerStatus.Accepted
+                                new CrawlerJobInfo
+                                {
+                                    Id = "https://foobar.com",
+                                    Result = new List<Uri>(),
+                                    Status = CrawlerJobInfo.WorkerStatus.Accepted
+                                }
                             }
                         );
                         services.AddSingleton<ICrawlerRepository>(repository);
+                        services.Remove(new ServiceDescriptor(typeof(CrawlerBackgroundService),
+                            typeof(CrawlerBackgroundService)));
                     });
                 })
                 .CreateClient();
@@ -93,6 +102,8 @@ namespace Crawlie.Server.IntegrationTests
         public async Task GetJobInfo_UnfinishedJob_ShouldReturnInProgress()
         {
             // Arrange
+            const string jobId = "https://foobar.com/";
+            var targetUri = new Uri(jobId);
             var client = _factory
                 .WithWebHostBuilder(builder =>
                 {
@@ -100,25 +111,32 @@ namespace Crawlie.Server.IntegrationTests
                     {
                         services.AddTransient<IDocumentFetcher, TestDocumentFetcher>();
                         services.AddTransient<ICrawlerBackgroundService, NoopCrawlerBackgroundService>();
-                        var repository = ConcurrentCrawlerRepository.NewWithExistingJobs(
-                            new CrawlerJobInfo
+                        var loggerFactory = new LoggerFactory();
+                        var repository =
+                            new ConcurrentCrawlerRepository();
+
+                        repository.TryAddRange(new[]
                             {
-                                Id = "https://foobar.com",
-                                Result = new List<Uri>(),
-                                Status = CrawlerJobInfo.WorkerStatus.Accepted
+                                new CrawlerJobInfo
+                                {
+                                    Id = targetUri.ToString(),
+                                    Result = new List<Uri>(),
+                                    Status = CrawlerJobInfo.WorkerStatus.Accepted
+                                }
                             }
                         );
                         services.AddSingleton<ICrawlerRepository>(repository);
+                        services.Remove(new ServiceDescriptor(typeof(CrawlerBackgroundService),
+                            typeof(CrawlerBackgroundService)));
                     });
                 })
                 .CreateClient();
 
             // Act
-            const string jobId = "https://foobar.com";
             var result = await client.GetAsync(QueryHelpers.AddQueryString("api/CrawlerJob",
                 new Dictionary<string, string>
                 {
-                    ["jobId"] = jobId
+                    ["jobId"] = targetUri.ToString()
                 })
             );
             var responseContent = await result.Content.ReadAsStringAsync();

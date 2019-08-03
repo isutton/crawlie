@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -14,11 +15,16 @@ namespace Crawlie.Server.IntegrationTests
         {
             // Arrange
             var resultList = new List<Uri> {new Uri("https://www.redhat.com")};
-            var repository = ConcurrentCrawlerRepository.NewWithExistingJobs(new CrawlerJobInfo
+            var loggerFactory = new LoggerFactory();
+            var repository = new ConcurrentCrawlerRepository();
+            repository.TryAddRange(new[]
             {
-                Id = "https://www.redhat.com/en/topics/cloud",
-                Status = CrawlerJobInfo.WorkerStatus.Complete,
-                Result = resultList
+                new CrawlerJobInfo
+                {
+                    Id = "https://www.redhat.com/en/topics/cloud",
+                    Status = CrawlerJobInfo.WorkerStatus.Complete,
+                    Result = resultList
+                }
             });
             var workerQueue = new DefaultCrawlerWorkerQueue();
             var crawlerService = new DefaultCrawlerJobService(repository, workerQueue);
@@ -40,13 +46,15 @@ namespace Crawlie.Server.IntegrationTests
         {
             // Arrange
             const string jobId = "https://www.redhat.com/en/topics/cloud";
-            
+
+            var loggerFactory = new LoggerFactory();
             var repository = new ConcurrentCrawlerRepository();
             var workerQueueMock = new Mock<ICrawlerWorkerQueue>();
             var crawlerService = new DefaultCrawlerJobService(repository, workerQueueMock.Object);
+            var targetUri = new Uri(jobId);
             var jobRequest = new CrawlerJobRequest
             {
-                Uri = new Uri(jobId)
+                Uri = targetUri
             };
 
             // Act
@@ -55,7 +63,7 @@ namespace Crawlie.Server.IntegrationTests
 
             // Assert
             jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
-            workerQueueMock.Verify(w => w.Add(jobId));
+            workerQueueMock.Verify(w => w.Add(targetUri));
         }
 
         [Fact]
@@ -63,18 +71,23 @@ namespace Crawlie.Server.IntegrationTests
         {
             // Arrange
             const string jobId = "https://www.redhat.com/en/topics/cloud";
-            
-            var repository = ConcurrentCrawlerRepository.NewWithExistingJobs(new CrawlerJobInfo
+            var loggerFactory = new LoggerFactory();
+            var repository = new ConcurrentCrawlerRepository();
+            repository.TryAddRange(new[]
             {
-                Id = jobId,
-                Status = CrawlerJobInfo.WorkerStatus.Accepted
+                new CrawlerJobInfo
+                {
+                    Id = jobId,
+                    Status = CrawlerJobInfo.WorkerStatus.Accepted
+                }
             });
+            var targetUri = new Uri(jobId);
             var workerQueue = new Mock<ICrawlerWorkerQueue>();
-            workerQueue.Setup(w => w.Add(jobId));
+            workerQueue.Setup(w => w.Add(targetUri));
             var crawlerService = new DefaultCrawlerJobService(repository, workerQueue.Object);
             var jobRequest = new CrawlerJobRequest
             {
-                Uri = new Uri(jobId)
+                Uri = targetUri
             };
 
             // Act

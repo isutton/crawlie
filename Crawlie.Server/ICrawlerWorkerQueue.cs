@@ -1,11 +1,12 @@
+using System;
 using System.Threading;
 
 namespace Crawlie.Server
 {
     public interface ICrawlerWorkerQueue
     {
-        void Add(string uriString);
+        void Add(Uri uri);
 
-        string Take(CancellationToken cancellationToken);
+        Uri Take(CancellationToken cancellationToken);
     }
 }

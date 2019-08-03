@@ -1,54 +1,69 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Crawlie.Server
 {
     public class DefaultCrawlerSupervisor : IDisposable
     {
-        private readonly IServiceProvider _serviceProvider;
+        private Task ExecutingTask { get; set; }
         private const uint WorkerPoolSize = 1;
-
         private readonly CancellationTokenSource _cancellationTokenSource;
-        private List<Task> _workers;
+        private readonly ILogger<DefaultCrawlerSupervisor> _logger;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly List<Task> _workers;
 
         public DefaultCrawlerSupervisor(
+            ILogger<DefaultCrawlerSupervisor> logger,
             IServiceProvider serviceProvider,
             CancellationToken cancellationToken)
         {
+            _logger = logger;
             _serviceProvider = serviceProvider;
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        }
-
-        public Task StartAsync()
-        {
             _workers = new List<Task>((int) WorkerPoolSize);
-            
-            for (var i = 0; i < WorkerPoolSize; i++)
-            {
-                var f = ActivatorUtilities.CreateInstance<CrawlerWorker>(_serviceProvider, _cancellationTokenSource.Token);
-
-                var workerTask = Task.Run(f.Start, _cancellationTokenSource.Token);
-                _workers.Add(workerTask);
-            }
-
-            return Task.WhenAll(_workers);
         }
-
-        public Task StopAsync(in CancellationToken cancellationToken)
-        {
-            // Shortcut here, until there's cancellationToken handling in the
-            // CrawlerWorker itself.
-            _cancellationTokenSource.Cancel();
-            
-            return Task.CompletedTask;
-        }
-
+        
         public void Dispose()
         {
             _cancellationTokenSource?.Dispose();
+        }
+
+        public Task ExecuteAsync()
+        {
+            _logger.LogInformation("Creating workers");
+
+            foreach (var i in Enumerable.Range(1, (int) WorkerPoolSize))
+            {
+                var worker =
+                    ActivatorUtilities.CreateInstance<CrawlerWorker>(_serviceProvider, _cancellationTokenSource.Token);
+                _workers.Add(Task.Run(worker.StartAsync, _cancellationTokenSource.Token));
+            }
+
+            _logger.LogInformation("Workers created");
+
+            ExecutingTask = Task.WhenAll(_workers);
+
+            return ExecutingTask;
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            if (ExecutingTask == null) return;
+
+            // Shortcut here, until there's cancellationToken handling in the
+            // CrawlerWorker itself.
+            _cancellationTokenSource.Cancel();
+
+            await Task.WhenAny(ExecutingTask, Task.Delay(-1, cancellationToken));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            _logger.LogInformation("Supervisor stopped.");
         }
     }
 }

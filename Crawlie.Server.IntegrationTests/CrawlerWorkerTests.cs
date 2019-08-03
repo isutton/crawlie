@@ -37,7 +37,7 @@ namespace Crawlie.Server.IntegrationTests
             repositoryMock
                 .Setup(r =>
                     r.CompleteJob(
-                        It.IsAny<string>(),
+                        It.IsAny<Uri>(),
                         It.IsAny<List<Uri>>()));
 
             var crawlerEngineMock = new Mock<ICrawlerEngine>();
@@ -68,13 +68,13 @@ namespace Crawlie.Server.IntegrationTests
                 new CancellationTokenSource(2000).Token);
 
             // Act
-            await crawlerWorker.ProcessJob(targetUri.ToString());
+            await crawlerWorker.ProcessJob(targetUri);
 
             // Assert
             repositoryMock
                 .Verify(r => 
                     r.CompleteJob(
-                        targetUri.ToString(), 
+                        targetUri, 
                         expectedUrls));
         }
 
@@ -87,13 +87,13 @@ namespace Crawlie.Server.IntegrationTests
             IDocumentFetcher documentFetcher = new TestDocumentFetcher();
             
             ICrawlerWorkerQueue workerQueue = new DefaultCrawlerWorkerQueue();
-            workerQueue.Add(targetUri.ToString());
+            workerQueue.Add(targetUri);
             
             var repositoryMock = new Mock<ICrawlerRepository>();
             repositoryMock
                 .Setup(r =>
                     r.CompleteJob(
-                        It.IsAny<string>(),
+                        It.IsAny<Uri>(),
                         It.IsAny<List<Uri>>()));
 
             var crawlerEngineMock = new Mock<ICrawlerEngine>();
@@ -125,14 +125,14 @@ namespace Crawlie.Server.IntegrationTests
                 tokenSource.Token);
 
             // Act
-            await crawlerWorker.Start();
+            await crawlerWorker.StartAsync();
             tokenSource.Cancel();
             
             // Assert
             repositoryMock
                 .Verify(r => 
                     r.CompleteJob(
-                        targetUri.ToString(), 
+                        targetUri, 
                         expectedUrls));
         }
     }

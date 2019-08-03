@@ -6,14 +6,14 @@ namespace Crawlie.Server
 {
     public class DefaultCrawlerWorkerQueue : ICrawlerWorkerQueue
     {
-        private readonly BlockingCollection<string> _workerQueue = new BlockingCollection<string>();
+        private readonly BlockingCollection<Uri> _workerQueue = new BlockingCollection<Uri>();
         
-        public void Add(string uriString)
+        public void Add(Uri uri)
         {
-            _workerQueue.Add(uriString);
+            _workerQueue.Add(uri);
         }
 
-        public string Take(CancellationToken cancellationToken)
+        public Uri Take(CancellationToken cancellationToken)
         {
             try
             {
