@@ -1,0 +1,12 @@
+language: csharp
+solution: crawlie.sln
+
+mono: none
+dotnet: 2.2.0
+
+services:
+  - docker
+
+script: 
+  - dotnet restore
+  - dotnet test Crawlie.Server.IntegrationTests -c Release
