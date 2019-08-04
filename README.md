@@ -25,18 +25,24 @@ snippet above; that is used as delimiter by `dotnet` (and other applications)
 to ignore any arguments from that point on and proxy it to the application it 
 is hosting.
 
-### Using Docker (WIP)
+### Using Docker
+
+Building `crawlie-server` and `crawlie-client` images:
+
+```shell
+$ make
+```
 
 Running *Crawlie.Server*:
 
 ```shell
-$ sudo docker run -d -p 5001:80 crawlie-server:latest
+$ sudo docker run -d -p 5001:5001 --name crawlile-server crawlie-server:latest
 ```
 
 Running *Crawlie.Client.App*:
 
 ```shell
-$ sudo docker run -it --rm crawlie-client:latest /RunnerOptions:Url=https://www.redhat.com/en
+$ sudo docker run -it --rm --network=host crawlie-client:latest /RunnerOptions:Url=https://www.redhat.com/en
 ```
 
 ## Architecture
