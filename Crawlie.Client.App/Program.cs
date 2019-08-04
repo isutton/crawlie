@@ -19,6 +19,7 @@ namespace Crawlie.Client
                     services.Configure<RunnerOptions>(configuration.GetSection("RunnerOptions"));
                     services.Configure<CrawlerClientOptions>(configuration.GetSection("CrawlerClientOptions"));
                     services.AddLogging();
+                    services.AddTransient<ISiteMapFormatter, JsonSiteMapFormatter>();
                     services.AddTransient<CrawlerClient>();
                     services.AddTransient<Runner>();
                     services.AddHttpClient<CrawlerClient>()
