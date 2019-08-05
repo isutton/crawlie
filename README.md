@@ -64,6 +64,11 @@ Once their work is finished, the job they finished is marked as complete,
 indicating to an external actor that the job has been finished and the result 
 of their operation can be found in the job itself.
 
+Please refer to the following diagram to understand the components and the
+information flow.
+
+![Diagram](./docs/Crawlie%20Flow.png)
+
 ### `POST  /api/CrawlerJob`
 
 Receives an `application/json` body like the following:
