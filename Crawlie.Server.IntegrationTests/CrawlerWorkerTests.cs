@@ -43,6 +43,7 @@ namespace Crawlie.Server.IntegrationTests
             var crawlerEngineMock = new Mock<ICrawlerEngine>();
             var expectedUrls = new List<Uri>()
             {
+                new Uri("https://foobar.com/"),
                 new Uri("https://foobar.com/link1"),
                 new Uri("https://foobar.com/link2"),
                 new Uri("https://foobar.com/link3"),
@@ -99,6 +100,7 @@ namespace Crawlie.Server.IntegrationTests
             var crawlerEngineMock = new Mock<ICrawlerEngine>();
             var expectedUrls = new List<Uri>()
             {
+                new Uri("https://foobar.com/"),
                 new Uri("https://foobar.com/link1"),
                 new Uri("https://foobar.com/link2"),
                 new Uri("https://foobar.com/link3"),

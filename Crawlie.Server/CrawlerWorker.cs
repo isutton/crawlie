@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -31,34 +33,78 @@ namespace Crawlie.Server
             _cancellationToken = cancellationToken;
         }
 
-        public async Task ProcessJob(Uri targetUri)
+        private static TimeSpan GetRandomDelay()
         {
+            var random = new Random();
+            return TimeSpan.FromSeconds(random.NextDouble() * 1.65);
+        }
+
+        public static bool CanProcessJobInternal(Uri targetUri)
+        {
+            return targetUri.Scheme == "http" || targetUri.Scheme == "https";
+        }
+        
+        // This is a recursive method that executes itself for each URL
+        // extracted from the document found in targetUri. seenUrls is
+        // a ConcurrentDictionary that is used to collect the results
+        // from all Tasks.
+        private async Task ProcessJobInternal(Uri targetUri, ConcurrentDictionary<Uri, object> seenUrls, TimeSpan delay,
+            uint recursionLevel)
+        {
+            if (recursionLevel == 0) return;
+            
+            if (!CanProcessJobInternal(targetUri)) return;
+            
+            await Task.Delay(delay, _cancellationToken);
+
+            if (!seenUrls.TryAdd(targetUri, default)) return;
+
             try
             {
                 _logger.LogDebug($"Downloading document from {targetUri}.");
-                
+
                 var documentString = await _documentFetcher.GetDocument(targetUri);
 
-                _logger.LogDebug($"Extracting document links.");
-                
+                _logger.LogDebug("Extracting document links.");
+
                 var documentLinks = await _crawlerEngine.ProcessDocument(documentString, targetUri.Host);
 
                 if (_logger.IsEnabled(LogLevel.Trace))
                 {
-                    var documentLinksJsonString = JsonConvert.SerializeObject(documentLinks, new JsonSerializerSettings()
+                    var documentLinksJsonString = JsonConvert.SerializeObject(documentLinks, new JsonSerializerSettings
                     {
                         Formatting = Formatting.Indented
                     });
-                    
+
                     _logger.LogTrace($"Extracted links: {documentLinksJsonString}");
                 }
 
-                _repository.CompleteJob(targetUri, documentLinks);
+                if (documentLinks.Count > 0)
+                {
+                    var tasks = documentLinks
+                        .Where(uri =>
+                        {
+                            var isUnknown = !seenUrls.ContainsKey(uri);
+                            var isSelfReference = uri.Equals(targetUri);
+                            return isUnknown && !isSelfReference;
+                        })
+                        .Select(uri => ProcessJobInternal(uri, seenUrls, GetRandomDelay(), recursionLevel - 1));
+
+                    await Task.WhenAll(tasks);
+                }
             }
             catch (Exception e)
             {
                 throw new NotImplementedException("Work in progress", e);
             }
+        }
+
+        public async Task ProcessJob(Uri targetUri)
+        {
+            var seenUrls = new ConcurrentDictionary<Uri, object>();
+            await ProcessJobInternal(targetUri, seenUrls, TimeSpan.Zero, 5);
+            var sortedSeenUrls = seenUrls.Keys.OrderBy(uri => uri.ToString()).ToList();
+            _repository.CompleteJob(targetUri, sortedSeenUrls);
         }
 
         public async Task StartAsync()

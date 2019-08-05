@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AngleSharp;
+using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 
 namespace Crawlie.Server
@@ -21,15 +22,32 @@ namespace Crawlie.Server
             _context = BrowsingContext.New(Configuration.Default);
         }
 
+        private static bool TryExtractHref(IElement element, out string href)
+        {
+            if (element is IHtmlAnchorElement anchorElement)
+            {
+                var cleanHref = anchorElement.Href.Replace(" ", "");
+                var hasCorrectProtocol = anchorElement.Protocol == "http:" || anchorElement.Protocol == "https:";
+
+                if (!string.IsNullOrWhiteSpace(cleanHref) && hasCorrectProtocol)
+                {
+                    href = cleanHref;
+                }
+            }
+
+            href = "";
+            return false;
+        }
+        
         public async Task<List<Uri>> ProcessDocument(string documentString, string baseUrl)
         {
             var document = await _context.OpenAsync(req => req.Content(documentString));
 
             var documentLinks = document
                 .QuerySelectorAll("a")
-                .SelectMany(e =>
-                    e is IHtmlAnchorElement anchorElement && !string.IsNullOrWhiteSpace(anchorElement.Href)
-                        ? new List<Uri> {new Uri(anchorElement.Href)}
+                .SelectMany(e => 
+                    TryExtractHref(e, out var href) 
+                        ? new List<Uri> {new Uri(href)} 
                         : new List<Uri>())
                 .Where(u => u.Host == baseUrl)
                 .ToList();
