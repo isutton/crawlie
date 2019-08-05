@@ -17,7 +17,8 @@ namespace Crawlie.Server.IntegrationTests
 
             // Act
             var targetUri = new Uri("https://foobar.com");
-            var result = await engine.ProcessDocument(await documentFetcher.GetDocument(targetUri), targetUri.Host);
+            var documentString = await documentFetcher.GetDocument(targetUri);
+            var result = await engine.ProcessDocument(documentString, targetUri.Host);
 
             // Assert
             result.Should().BeEquivalentTo(new List<Uri>()
