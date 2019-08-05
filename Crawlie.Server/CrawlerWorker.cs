@@ -55,7 +55,7 @@ namespace Crawlie.Server
             
             if (!CanProcessJobInternal(targetUri)) return;
             
-            await Task.Delay(delay, _cancellationToken);
+            await Task.Delay(delay);
 
             if (!seenUrls.TryAdd(targetUri, default)) return;
 
