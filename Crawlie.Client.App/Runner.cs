@@ -28,13 +28,12 @@ namespace Crawlie.Client
             _crawlerClient = crawlerClient;
         }
 
-        private async Task<List<Uri>> GetDocumentLinksAsync(Uri targetUri)
+        private async Task<List<Uri>> GetDocumentLinksAsync(Uri targetUri, CancellationToken cancellationToken)
         {
-            var cancellationTokenSource = new CancellationTokenSource(10000);
+            
+            cancellationToken.ThrowIfCancellationRequested();
 
-            cancellationTokenSource.Token.ThrowIfCancellationRequested();
-
-            var jobStatus = await _crawlerClient.GetJobRequestAsync(targetUri, cancellationTokenSource.Token);
+            var jobStatus = await _crawlerClient.GetJobRequestAsync(targetUri, cancellationToken);
 
             if (jobStatus == null)
             {
@@ -45,13 +44,13 @@ namespace Crawlie.Client
 
                 jobStatus = await _crawlerClient.SubmitJobRequest(jobRequest);
 
-                while (!cancellationTokenSource.Token.IsCancellationRequested &&
+                while (!cancellationToken.IsCancellationRequested &&
                        jobStatus.Status != CrawlerJobResponse.JobStatus.Complete)
                 {
-                    await Task.Delay(500, cancellationTokenSource.Token);
+                    await Task.Delay(500, cancellationToken);
                     
                     jobStatus = await _crawlerClient.GetJobRequestAsync(new Uri(jobStatus.Id),
-                        cancellationTokenSource.Token);
+                        cancellationToken);
                 }
             }
 
@@ -64,7 +63,9 @@ namespace Crawlie.Client
         {
             try
             {
-                var documentLinks = await GetDocumentLinksAsync(new Uri(_runnerOptions.Value.Url));
+                var cancellationTokenSource = new CancellationTokenSource(60000);
+
+                var documentLinks = await GetDocumentLinksAsync(new Uri(_runnerOptions.Value.Url), cancellationTokenSource.Token);
                 
                 var siteMapString = _siteMapFormatter.Format(documentLinks);
 
