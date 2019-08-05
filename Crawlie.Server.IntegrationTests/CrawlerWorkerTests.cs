@@ -59,17 +59,20 @@ namespace Crawlie.Server.IntegrationTests
 
 
             var logger = _serviceProvider.GetRequiredService<ILogger<CrawlerWorker>>();
-            
+
+
+            var cancellationTokenSource = new CancellationTokenSource(6000);
             var crawlerWorker = new CrawlerWorker(
                 documentFetcher,
                 repositoryMock.Object,
                 crawlerEngineMock.Object, 
                 workerQueueMock.Object, 
                 logger, 
-                new CancellationTokenSource(2000).Token);
+                cancellationTokenSource.Token);
 
             // Act
             await crawlerWorker.ProcessJob(targetUri);
+            cancellationTokenSource.Cancel();
 
             // Assert
             repositoryMock
@@ -114,7 +117,7 @@ namespace Crawlie.Server.IntegrationTests
                         targetUri.Host))
                 .ReturnsAsync(expectedUrls);
             
-            var tokenSource = new CancellationTokenSource(2000);
+            var cancellationTokenSource = new CancellationTokenSource(6000);
             
             var logger = _serviceProvider.GetRequiredService<ILogger<CrawlerWorker>>();
 
@@ -124,11 +127,11 @@ namespace Crawlie.Server.IntegrationTests
                 crawlerEngineMock.Object, 
                 workerQueue, 
                 logger, 
-                tokenSource.Token);
+                cancellationTokenSource.Token);
 
             // Act
             await crawlerWorker.StartAsync();
-            tokenSource.Cancel();
+            cancellationTokenSource.Cancel();
             
             // Assert
             repositoryMock
