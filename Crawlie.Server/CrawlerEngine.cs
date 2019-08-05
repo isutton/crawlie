@@ -32,6 +32,7 @@ namespace Crawlie.Server
                 if (!string.IsNullOrWhiteSpace(cleanHref) && hasCorrectProtocol)
                 {
                     href = cleanHref;
+                    return true;
                 }
             }
 
