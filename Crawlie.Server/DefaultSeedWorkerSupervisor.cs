@@ -8,17 +8,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Crawlie.Server
 {
-    public class DefaultCrawlerSupervisor : IDisposable
+    public class DefaultSeedWorkerSupervisor : IDisposable
     {
         private Task ExecutingTask { get; set; }
         private const uint WorkerPoolSize = 1;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        private readonly ILogger<DefaultCrawlerSupervisor> _logger;
+        private readonly ILogger<DefaultSeedWorkerSupervisor> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly List<Task> _workers;
 
-        public DefaultCrawlerSupervisor(
-            ILogger<DefaultCrawlerSupervisor> logger,
+        public DefaultSeedWorkerSupervisor(
+            ILogger<DefaultSeedWorkerSupervisor> logger,
             IServiceProvider serviceProvider,
             CancellationToken cancellationToken)
         {

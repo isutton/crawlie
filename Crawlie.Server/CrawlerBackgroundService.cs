@@ -28,7 +28,7 @@ namespace Crawlie.Server
     {
         private readonly ILogger<CrawlerBackgroundService> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private DefaultCrawlerSupervisor _supervisor;
+        private DefaultSeedWorkerSupervisor _supervisor;
 
         public CrawlerBackgroundService(
             ILogger<CrawlerBackgroundService> logger,
@@ -40,7 +40,7 @@ namespace Crawlie.Server
         
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _supervisor = ActivatorUtilities.CreateInstance<DefaultCrawlerSupervisor>(_serviceProvider, cancellationToken);
+            _supervisor = ActivatorUtilities.CreateInstance<DefaultSeedWorkerSupervisor>(_serviceProvider, cancellationToken);
 
             var executingTask = _supervisor.ExecuteAsync();
 
