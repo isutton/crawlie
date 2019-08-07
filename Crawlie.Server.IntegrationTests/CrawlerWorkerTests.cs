@@ -58,11 +58,11 @@ namespace Crawlie.Server.IntegrationTests
                 .ReturnsAsync(expectedUrls);
 
 
-            var logger = _serviceProvider.GetRequiredService<ILogger<CrawlerWorker>>();
+            var logger = _serviceProvider.GetRequiredService<ILogger<SeedWorker>>();
 
 
             var cancellationTokenSource = new CancellationTokenSource(6000);
-            var crawlerWorker = new CrawlerWorker(
+            var crawlerWorker = new SeedWorker(
                 documentFetcher,
                 repositoryMock.Object,
                 crawlerEngineMock.Object, 
@@ -119,9 +119,9 @@ namespace Crawlie.Server.IntegrationTests
             
             var cancellationTokenSource = new CancellationTokenSource(6000);
             
-            var logger = _serviceProvider.GetRequiredService<ILogger<CrawlerWorker>>();
+            var logger = _serviceProvider.GetRequiredService<ILogger<SeedWorker>>();
 
-            var crawlerWorker = new CrawlerWorker(
+            var crawlerWorker = new SeedWorker(
                 documentFetcher,
                 repositoryMock.Object,
                 crawlerEngineMock.Object, 

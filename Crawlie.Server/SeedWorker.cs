@@ -8,21 +8,21 @@ using Newtonsoft.Json;
 
 namespace Crawlie.Server
 {
-    public class CrawlerWorker
+    public class SeedWorker
     {
         private readonly CancellationToken _cancellationToken;
         private readonly ICrawlerEngine _crawlerEngine;
         private readonly IDocumentFetcher _documentFetcher;
-        private readonly ILogger<CrawlerWorker> _logger;
+        private readonly ILogger<SeedWorker> _logger;
         private readonly ISeedJobRepository _repository;
         private readonly ISeedWorkerQueue _workerQueue;
 
-        public CrawlerWorker(
+        public SeedWorker(
             IDocumentFetcher documentFetcher,
             ISeedJobRepository repository,
             ICrawlerEngine crawlerEngine,
             ISeedWorkerQueue workerQueue,
-            ILogger<CrawlerWorker> logger,
+            ILogger<SeedWorker> logger,
             CancellationToken cancellationToken)
         {
             _documentFetcher = documentFetcher;

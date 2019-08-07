@@ -40,7 +40,7 @@ namespace Crawlie.Server
             foreach (var i in Enumerable.Range(1, (int) WorkerPoolSize))
             {
                 var worker =
-                    ActivatorUtilities.CreateInstance<CrawlerWorker>(_serviceProvider, _cancellationTokenSource.Token);
+                    ActivatorUtilities.CreateInstance<SeedWorker>(_serviceProvider, _cancellationTokenSource.Token);
                 _workers.Add(Task.Run(worker.StartAsync, _cancellationTokenSource.Token));
             }
 
