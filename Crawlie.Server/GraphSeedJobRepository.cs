@@ -10,9 +10,9 @@ namespace Crawlie.Server
 
         private readonly SeedGraphRepository _seedGraphRepository;
 
-        public GraphSeedJobRepository(SeedGraphRepository seedGraphRepository)
+        public GraphSeedJobRepository()
         {
-            _seedGraphRepository = seedGraphRepository;
+            _seedGraphRepository = new SeedGraphRepository();
         }
 
         public Task<SeedJobStatus> GetJobInfoAsync(Uri targetUri)
