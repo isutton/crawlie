@@ -2,7 +2,7 @@ using System;
 
 namespace Crawlie.Contracts
 {
-    public class CrawlerJobRequest
+    public class SeedJobRequest
     {
         public Uri Uri { get; set; }
     }

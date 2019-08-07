@@ -23,7 +23,7 @@ namespace Crawlie.Server
                 : Task.FromResult<SeedJobStatus>(null);
         }
 
-        public Task<SeedJobStatus> AddJobRequestAsync(CrawlerJobRequest jobRequest)
+        public Task<SeedJobStatus> AddJobRequestAsync(SeedJobRequest jobRequest)
         {
             var jobInfo = new SeedJobStatus
             {

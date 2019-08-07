@@ -9,7 +9,7 @@ namespace Crawlie.Server
     {
         Task<SeedJobStatus> GetJobInfoAsync(Uri targetUri);
         
-        Task<SeedJobStatus> AddJobRequestAsync(CrawlerJobRequest jobRequest);
+        Task<SeedJobStatus> AddJobRequestAsync(SeedJobRequest jobRequest);
         
         void CompleteJob(Uri targetUri, List<Uri> documentLinks);
     }

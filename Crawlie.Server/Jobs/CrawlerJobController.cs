@@ -18,7 +18,7 @@ namespace Crawlie.Server.Jobs
         }
         
         [HttpPost]
-        public async Task<ActionResult<CrawlerJobResponse>> CreateJob([FromBody] CrawlerJobRequest jobRequest)
+        public async Task<ActionResult<CrawlerJobResponse>> CreateJob([FromBody] SeedJobRequest jobRequest)
         {
             var jobResponse = await _crawlerJobService.HandleJobRequest(jobRequest);
             return Ok(jobResponse);

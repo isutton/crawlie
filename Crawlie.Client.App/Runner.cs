@@ -37,7 +37,7 @@ namespace Crawlie.Client
 
             if (jobStatus == null)
             {
-                var jobRequest = new CrawlerJobRequest
+                var jobRequest = new SeedJobRequest
                 {
                     Uri = targetUri
                 };

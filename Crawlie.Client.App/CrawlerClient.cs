@@ -28,7 +28,7 @@ namespace Crawlie.Client
             _httpClient.Timeout = TimeSpan.FromSeconds(2.0);
         }
 
-        public async Task<CrawlerJobResponse> SubmitJobRequest(CrawlerJobRequest jobRequest)
+        public async Task<CrawlerJobResponse> SubmitJobRequest(SeedJobRequest jobRequest)
         {
             var serializedJobRequestContent = JsonConvert.SerializeObject(jobRequest);
             var jobRequestContent = new StringContent(

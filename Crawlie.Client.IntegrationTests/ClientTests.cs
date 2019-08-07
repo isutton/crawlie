@@ -66,7 +66,7 @@ namespace Crawlie.Client.IntegrationTests
                     .Services
                     .GetService<CrawlerClient>();
 
-            var jobRequest = new CrawlerJobRequest
+            var jobRequest = new SeedJobRequest
             {
                 Uri = new Uri("https://foobar.com")
             };
@@ -125,7 +125,7 @@ namespace Crawlie.Client.IntegrationTests
                     .Services
                     .GetService<CrawlerClient>();
 
-            var jobRequest = new CrawlerJobRequest {Uri = targetUri};
+            var jobRequest = new SeedJobRequest {Uri = targetUri};
 
             // Act
             var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
@@ -181,7 +181,7 @@ namespace Crawlie.Client.IntegrationTests
                     .Services
                     .GetService<CrawlerClient>();
 
-            var jobRequest = new CrawlerJobRequest
+            var jobRequest = new SeedJobRequest
             {
                 Uri = targetUri
             };

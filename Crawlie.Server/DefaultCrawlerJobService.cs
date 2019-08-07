@@ -17,7 +17,7 @@ namespace Crawlie.Server
             _workerQueue = workerQueue;
         }
 
-        public async Task<CrawlerJobResponse> HandleJobRequest(CrawlerJobRequest jobRequest)
+        public async Task<CrawlerJobResponse> HandleJobRequest(SeedJobRequest jobRequest)
         {
             var existingJobInfo = await _repository.GetJobInfoAsync(jobRequest.Uri);
             if (existingJobInfo != null)

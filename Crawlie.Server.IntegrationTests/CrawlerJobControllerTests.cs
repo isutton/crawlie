@@ -45,7 +45,7 @@ namespace Crawlie.Server.IntegrationTests
                 .CreateClient();
 
             // Act
-            var result = await client.PostAsJsonAsync("api/CrawlerJob", new CrawlerJobRequest
+            var result = await client.PostAsJsonAsync("api/CrawlerJob", new SeedJobRequest
             {
                 Uri = new Uri("https://foobar.com")
             });
@@ -87,7 +87,7 @@ namespace Crawlie.Server.IntegrationTests
                 .CreateClient();
 
             // Act
-            var result = await client.PostAsJsonAsync("api/CrawlerJob", new CrawlerJobRequest
+            var result = await client.PostAsJsonAsync("api/CrawlerJob", new SeedJobRequest
             {
                 Uri = new Uri("https://foobar.com")
             });
