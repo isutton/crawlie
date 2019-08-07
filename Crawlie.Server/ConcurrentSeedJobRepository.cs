@@ -16,14 +16,14 @@ namespace Crawlie.Server
         private readonly ConcurrentDictionary<string, SeedJobStatus> _jobCollection =
             new ConcurrentDictionary<string, SeedJobStatus>();
 
-        public Task<SeedJobStatus> GetSeedJobStatusAsync(Uri seedUri)
+        public Task<SeedJobStatus> GetAsync(Uri seedUri)
         {
             return _jobCollection.TryGetValue(seedUri.ToString(), out var jobInfo)
                 ? Task.FromResult(jobInfo)
                 : Task.FromResult<SeedJobStatus>(null);
         }
 
-        public Task<SeedJobStatus> AddJobRequestAsync(SeedJobRequest jobRequest)
+        public Task<SeedJobStatus> AddAsync(SeedJobRequest jobRequest)
         {
             var jobInfo = new SeedJobStatus
             {
@@ -36,9 +36,9 @@ namespace Crawlie.Server
                 : Task.FromResult<SeedJobStatus>(null);
         }
 
-        public void CompleteJob(Uri targetUri, List<Uri> documentLinks)
+        public void Complete(Uri seedUri, List<Uri> documentLinks)
         {
-            if (!_jobCollection.TryGetValue(targetUri.ToString(), out var jobInfo)) return;
+            if (!_jobCollection.TryGetValue(seedUri.ToString(), out var jobInfo)) return;
 
             var newJobInfo = new SeedJobStatus
             {
@@ -47,7 +47,7 @@ namespace Crawlie.Server
                 Result = documentLinks
             };
 
-            if (!_jobCollection.TryUpdate(targetUri.ToString(), newJobInfo, jobInfo))
+            if (!_jobCollection.TryUpdate(seedUri.ToString(), newJobInfo, jobInfo))
                 throw new NotImplementedException("Work in progress.");
         }
 

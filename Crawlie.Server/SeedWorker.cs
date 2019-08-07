@@ -104,7 +104,7 @@ namespace Crawlie.Server
             var seenUrls = new ConcurrentDictionary<Uri, object>();
             await ProcessJobInternal(targetUri, seenUrls, TimeSpan.Zero, 5);
             var sortedSeenUrls = seenUrls.Keys.OrderBy(uri => uri.ToString()).ToList();
-            _repository.CompleteJob(targetUri, sortedSeenUrls);
+            _repository.Complete(targetUri, sortedSeenUrls);
         }
 
         public async Task StartAsync()

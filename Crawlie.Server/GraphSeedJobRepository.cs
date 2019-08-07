@@ -15,17 +15,17 @@ namespace Crawlie.Server
             _seedGraphRepository = new SeedGraphRepository();
         }
 
-        public Task<SeedJobStatus> GetSeedJobStatusAsync(Uri seedUri)
+        public Task<SeedJobStatus> GetAsync(Uri seedUri)
         {
             throw new NotImplementedException();
         }
 
-        public Task<SeedJobStatus> AddJobRequestAsync(SeedJobRequest jobRequest)
+        public Task<SeedJobStatus> AddAsync(SeedJobRequest jobRequest)
         {
             throw new NotImplementedException();
         }
 
-        public void CompleteJob(Uri targetUri, List<Uri> documentLinks)
+        public void Complete(Uri seedUri, List<Uri> documentLinks)
         {
             throw new NotImplementedException();
         }

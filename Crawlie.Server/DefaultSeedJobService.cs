@@ -19,7 +19,7 @@ namespace Crawlie.Server
 
         public async Task<SeedJobStatusResponse> HandleJobRequest(SeedJobRequest jobRequest)
         {
-            var existingJobInfo = await _repository.GetSeedJobStatusAsync(jobRequest.Uri);
+            var existingJobInfo = await _repository.GetAsync(jobRequest.Uri);
             if (existingJobInfo != null)
                 // Requested URL is in progress or finished, map jobInfo
                 // to a response.
@@ -28,7 +28,7 @@ namespace Crawlie.Server
             // Requested URL is new, so add the job request to the
             // repository for the results to be collected later and
             // enqueue the jobRequest URL.
-            var addedJobInfo = await _repository.AddJobRequestAsync(jobRequest);
+            var addedJobInfo = await _repository.AddAsync(jobRequest);
             _workerQueue.Add(jobRequest.Uri);
 
             return CrawlerJobResponseUtility.NewFromExistingJobInfo(addedJobInfo);
@@ -36,7 +36,7 @@ namespace Crawlie.Server
 
         public async Task<SeedJobStatusResponse> GetJobInfo(string jobId)
         {
-            var jobInfo = await _repository.GetSeedJobStatusAsync(new Uri(jobId));
+            var jobInfo = await _repository.GetAsync(new Uri(jobId));
 
 
             return

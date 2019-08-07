@@ -36,7 +36,7 @@ namespace Crawlie.Server.IntegrationTests
             var repositoryMock = new Mock<ISeedJobRepository>();
             repositoryMock
                 .Setup(r =>
-                    r.CompleteJob(
+                    r.Complete(
                         It.IsAny<Uri>(),
                         It.IsAny<List<Uri>>()));
 
@@ -77,7 +77,7 @@ namespace Crawlie.Server.IntegrationTests
             // Assert
             repositoryMock
                 .Verify(r => 
-                    r.CompleteJob(
+                    r.Complete(
                         targetUri, 
                         expectedUrls));
         }
@@ -96,7 +96,7 @@ namespace Crawlie.Server.IntegrationTests
             var repositoryMock = new Mock<ISeedJobRepository>();
             repositoryMock
                 .Setup(r =>
-                    r.CompleteJob(
+                    r.Complete(
                         It.IsAny<Uri>(),
                         It.IsAny<List<Uri>>()));
 
@@ -136,7 +136,7 @@ namespace Crawlie.Server.IntegrationTests
             // Assert
             repositoryMock
                 .Verify(r => 
-                    r.CompleteJob(
+                    r.Complete(
                         targetUri, 
                         expectedUrls));
         }
