@@ -7,9 +7,9 @@ namespace Crawlie.Server
 {
     public interface ICrawlerRepository
     {
-        Task<CrawlerJobInfo> GetJobInfoAsync(Uri targetUri);
+        Task<SeedJobStatus> GetJobInfoAsync(Uri targetUri);
         
-        Task<CrawlerJobInfo> AddJobRequestAsync(CrawlerJobRequest jobRequest);
+        Task<SeedJobStatus> AddJobRequestAsync(CrawlerJobRequest jobRequest);
         
         void CompleteJob(Uri targetUri, List<Uri> documentLinks);
     }

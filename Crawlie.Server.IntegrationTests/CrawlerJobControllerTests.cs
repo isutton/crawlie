@@ -71,11 +71,11 @@ namespace Crawlie.Server.IntegrationTests
                             new ConcurrentCrawlerRepository();
                         repository.TryAddRange(new[]
                             {
-                                new CrawlerJobInfo
+                                new SeedJobStatus
                                 {
                                     Id = "https://foobar.com",
                                     Result = new List<Uri>(),
-                                    Status = CrawlerJobInfo.WorkerStatus.Accepted
+                                    Status = SeedJobStatus.WorkerStatus.Accepted
                                 }
                             }
                         );
@@ -118,11 +118,11 @@ namespace Crawlie.Server.IntegrationTests
 
                         repository.TryAddRange(new[]
                             {
-                                new CrawlerJobInfo
+                                new SeedJobStatus
                                 {
                                     Id = targetUri.ToString(),
                                     Result = new List<Uri>(),
-                                    Status = CrawlerJobInfo.WorkerStatus.Accepted
+                                    Status = SeedJobStatus.WorkerStatus.Accepted
                                 }
                             }
                         );

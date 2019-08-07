@@ -92,11 +92,11 @@ namespace Crawlie.Client.IntegrationTests
                             new ConcurrentCrawlerRepository();
                         repository.TryAddRange(new[]
                             {
-                                new CrawlerJobInfo
+                                new SeedJobStatus
                                 {
                                     Id = targetUri.ToString(),
                                     Result = new List<Uri>(),
-                                    Status = CrawlerJobInfo.WorkerStatus.Accepted
+                                    Status = SeedJobStatus.WorkerStatus.Accepted
                                 }
                             }
                         );
@@ -148,11 +148,11 @@ namespace Crawlie.Client.IntegrationTests
                             new ConcurrentCrawlerRepository();
                         repository.TryAddRange(new[]
                             {
-                                new CrawlerJobInfo
+                                new SeedJobStatus
                                 {
                                     Id = targetUri.ToString(),
                                     Result = new List<Uri>(),
-                                    Status = CrawlerJobInfo.WorkerStatus.Complete
+                                    Status = SeedJobStatus.WorkerStatus.Complete
                                 }
                             }
                         );
@@ -238,11 +238,11 @@ namespace Crawlie.Client.IntegrationTests
                             new ConcurrentCrawlerRepository();
                         repository.TryAddRange(new[]
                             {
-                                new CrawlerJobInfo
+                                new SeedJobStatus
                                 {
                                     Id = targetUri.ToString(),
                                     Result = new List<Uri>(),
-                                    Status = CrawlerJobInfo.WorkerStatus.Accepted
+                                    Status = SeedJobStatus.WorkerStatus.Accepted
                                 }
                             }
                         );
@@ -293,11 +293,11 @@ namespace Crawlie.Client.IntegrationTests
                             new ConcurrentCrawlerRepository();
                         repository.TryAddRange(new[]
                             {
-                                new CrawlerJobInfo
+                                new SeedJobStatus
                                 {
                                     Id = targetUri.ToString(),
                                     Result = new List<Uri>(),
-                                    Status = CrawlerJobInfo.WorkerStatus.Complete
+                                    Status = SeedJobStatus.WorkerStatus.Complete
                                 }
                             }
                         );

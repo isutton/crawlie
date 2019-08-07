@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Crawlie.Server
 {
-    public class CrawlerJobInfo
+    public class SeedJobStatus
     {
         public enum WorkerStatus
         {

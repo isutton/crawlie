@@ -13,37 +13,37 @@ namespace Crawlie.Server
     /// </summary>
     public class ConcurrentCrawlerRepository : ICrawlerRepository
     {
-        private readonly ConcurrentDictionary<string, CrawlerJobInfo> _jobCollection =
-            new ConcurrentDictionary<string, CrawlerJobInfo>();
+        private readonly ConcurrentDictionary<string, SeedJobStatus> _jobCollection =
+            new ConcurrentDictionary<string, SeedJobStatus>();
 
-        public Task<CrawlerJobInfo> GetJobInfoAsync(Uri targetUri)
+        public Task<SeedJobStatus> GetJobInfoAsync(Uri targetUri)
         {
             return _jobCollection.TryGetValue(targetUri.ToString(), out var jobInfo)
                 ? Task.FromResult(jobInfo)
-                : Task.FromResult<CrawlerJobInfo>(null);
+                : Task.FromResult<SeedJobStatus>(null);
         }
 
-        public Task<CrawlerJobInfo> AddJobRequestAsync(CrawlerJobRequest jobRequest)
+        public Task<SeedJobStatus> AddJobRequestAsync(CrawlerJobRequest jobRequest)
         {
-            var jobInfo = new CrawlerJobInfo
+            var jobInfo = new SeedJobStatus
             {
                 Id = jobRequest.Uri.ToString(),
-                Status = CrawlerJobInfo.WorkerStatus.Accepted
+                Status = SeedJobStatus.WorkerStatus.Accepted
             };
 
             return _jobCollection.TryAdd(jobRequest.Uri.ToString(), jobInfo)
                 ? Task.FromResult(jobInfo)
-                : Task.FromResult<CrawlerJobInfo>(null);
+                : Task.FromResult<SeedJobStatus>(null);
         }
 
         public void CompleteJob(Uri targetUri, List<Uri> documentLinks)
         {
             if (!_jobCollection.TryGetValue(targetUri.ToString(), out var jobInfo)) return;
 
-            var newJobInfo = new CrawlerJobInfo
+            var newJobInfo = new SeedJobStatus
             {
                 Id = jobInfo.Id,
-                Status = CrawlerJobInfo.WorkerStatus.Complete,
+                Status = SeedJobStatus.WorkerStatus.Complete,
                 Result = documentLinks
             };
 
@@ -51,7 +51,7 @@ namespace Crawlie.Server
                 throw new NotImplementedException("Work in progress.");
         }
 
-        public void TryAddRange(IEnumerable<CrawlerJobInfo> existingJobs)
+        public void TryAddRange(IEnumerable<SeedJobStatus> existingJobs)
         {
             foreach (var jobInfo in existingJobs) _jobCollection.TryAdd(jobInfo.Id, jobInfo);
         }

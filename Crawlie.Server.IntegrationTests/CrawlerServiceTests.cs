@@ -20,10 +20,10 @@ namespace Crawlie.Server.IntegrationTests
             var repository = new ConcurrentCrawlerRepository();
             repository.TryAddRange(new[]
             {
-                new CrawlerJobInfo
+                new SeedJobStatus
                 {
                     Id = "https://www.redhat.com/en/topics/cloud",
-                    Status = CrawlerJobInfo.WorkerStatus.Complete,
+                    Status = SeedJobStatus.WorkerStatus.Complete,
                     Result = resultList
                 }
             });
@@ -76,10 +76,10 @@ namespace Crawlie.Server.IntegrationTests
             var repository = new ConcurrentCrawlerRepository();
             repository.TryAddRange(new[]
             {
-                new CrawlerJobInfo
+                new SeedJobStatus
                 {
                     Id = jobId,
-                    Status = CrawlerJobInfo.WorkerStatus.Accepted
+                    Status = SeedJobStatus.WorkerStatus.Accepted
                 }
             });
             var targetUri = new Uri(jobId);
