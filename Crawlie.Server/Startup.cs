@@ -47,7 +47,7 @@ namespace Crawlie.Server
             
             // The CrawlerJobController pumps requests in the ICrawlerWorkerQueue,
             // which in turn are consumed by CrawlerWorker processes.
-            services.AddSingleton<ICrawlerWorkerQueue, DefaultCrawlerWorkerQueue>();
+            services.AddSingleton<ISeedWorkerQueue, DefaultSeedWorkerQueue>();
 
             // This is the glue between ASP.NET host and the CrawlerWorker
             // processes.

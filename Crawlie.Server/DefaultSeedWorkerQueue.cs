@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Crawlie.Server
 {
-    public class DefaultCrawlerWorkerQueue : ICrawlerWorkerQueue
+    public class DefaultSeedWorkerQueue : ISeedWorkerQueue
     {
         private readonly BlockingCollection<Uri> _workerQueue = new BlockingCollection<Uri>();
         

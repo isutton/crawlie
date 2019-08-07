@@ -27,7 +27,7 @@ namespace Crawlie.Server.IntegrationTests
                     Result = resultList
                 }
             });
-            var workerQueue = new DefaultCrawlerWorkerQueue();
+            var workerQueue = new DefaultSeedWorkerQueue();
             var crawlerService = new DefaultSeedJobService(repository, workerQueue);
             var jobRequest = new SeedJobRequest
             {
@@ -50,7 +50,7 @@ namespace Crawlie.Server.IntegrationTests
 
             var loggerFactory = new LoggerFactory();
             var repository = new ConcurrentSeedJobRepository();
-            var workerQueueMock = new Mock<ICrawlerWorkerQueue>();
+            var workerQueueMock = new Mock<ISeedWorkerQueue>();
             var crawlerService = new DefaultSeedJobService(repository, workerQueueMock.Object);
             var targetUri = new Uri(jobId);
             var jobRequest = new SeedJobRequest
@@ -83,7 +83,7 @@ namespace Crawlie.Server.IntegrationTests
                 }
             });
             var targetUri = new Uri(jobId);
-            var workerQueue = new Mock<ICrawlerWorkerQueue>();
+            var workerQueue = new Mock<ISeedWorkerQueue>();
             workerQueue.Setup(w => w.Add(targetUri));
             var crawlerService = new DefaultSeedJobService(repository, workerQueue.Object);
             var jobRequest = new SeedJobRequest

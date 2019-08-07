@@ -15,13 +15,13 @@ namespace Crawlie.Server
         private readonly IDocumentFetcher _documentFetcher;
         private readonly ILogger<CrawlerWorker> _logger;
         private readonly ISeedJobRepository _repository;
-        private readonly ICrawlerWorkerQueue _workerQueue;
+        private readonly ISeedWorkerQueue _workerQueue;
 
         public CrawlerWorker(
             IDocumentFetcher documentFetcher,
             ISeedJobRepository repository,
             ICrawlerEngine crawlerEngine,
-            ICrawlerWorkerQueue workerQueue,
+            ISeedWorkerQueue workerQueue,
             ILogger<CrawlerWorker> logger,
             CancellationToken cancellationToken)
         {

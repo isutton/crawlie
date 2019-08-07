@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Crawlie.Server
 {
-    public interface ICrawlerWorkerQueue
+    public interface ISeedWorkerQueue
     {
         void Add(Uri uri);
 

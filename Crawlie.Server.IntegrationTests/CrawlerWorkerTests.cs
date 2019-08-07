@@ -31,7 +31,7 @@ namespace Crawlie.Server.IntegrationTests
 
             IDocumentFetcher documentFetcher = new TestDocumentFetcher();
             
-            var workerQueueMock = new Mock<ICrawlerWorkerQueue>();
+            var workerQueueMock = new Mock<ISeedWorkerQueue>();
 
             var repositoryMock = new Mock<ISeedJobRepository>();
             repositoryMock
@@ -90,7 +90,7 @@ namespace Crawlie.Server.IntegrationTests
 
             IDocumentFetcher documentFetcher = new TestDocumentFetcher();
             
-            ICrawlerWorkerQueue workerQueue = new DefaultCrawlerWorkerQueue();
+            ISeedWorkerQueue workerQueue = new DefaultSeedWorkerQueue();
             workerQueue.Add(targetUri);
             
             var repositoryMock = new Mock<ISeedJobRepository>();

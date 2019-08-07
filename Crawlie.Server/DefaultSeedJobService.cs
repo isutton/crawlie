@@ -7,11 +7,11 @@ namespace Crawlie.Server
     public class DefaultSeedJobService : ISeedJobService
     {
         private readonly ISeedJobRepository _repository;
-        private readonly ICrawlerWorkerQueue _workerQueue;
+        private readonly ISeedWorkerQueue _workerQueue;
 
         public DefaultSeedJobService(
             ISeedJobRepository repository,
-            ICrawlerWorkerQueue workerQueue)
+            ISeedWorkerQueue workerQueue)
         {
             _repository = repository;
             _workerQueue = workerQueue;
