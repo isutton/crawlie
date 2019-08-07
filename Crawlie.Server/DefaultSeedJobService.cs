@@ -4,12 +4,12 @@ using Crawlie.Contracts;
 
 namespace Crawlie.Server
 {
-    public class DefaultCrawlerJobService : ICrawlerJobService
+    public class DefaultSeedJobService : ISeedJobService
     {
         private readonly ISeedJobRepository _repository;
         private readonly ICrawlerWorkerQueue _workerQueue;
 
-        public DefaultCrawlerJobService(
+        public DefaultSeedJobService(
             ISeedJobRepository repository,
             ICrawlerWorkerQueue workerQueue)
         {

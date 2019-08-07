@@ -3,7 +3,7 @@ using Crawlie.Contracts;
 
 namespace Crawlie.Server
 {
-    public interface ICrawlerJobService
+    public interface ISeedJobService
     {
         Task<SeedJobStatusResponse> HandleJobRequest(SeedJobRequest jobRequest);
         

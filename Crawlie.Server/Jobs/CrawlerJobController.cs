@@ -9,25 +9,25 @@ namespace Crawlie.Server.Jobs
     [ApiController]
     public class CrawlerJobController : ControllerBase
     {
-        private readonly ICrawlerJobService _crawlerJobService;
+        private readonly ISeedJobService _seedJobService;
 
         public CrawlerJobController(
-            ICrawlerJobService crawlerJobService)
+            ISeedJobService seedJobService)
         {
-            _crawlerJobService = crawlerJobService;
+            _seedJobService = seedJobService;
         }
         
         [HttpPost]
         public async Task<ActionResult<SeedJobStatusResponse>> CreateJob([FromBody] SeedJobRequest jobRequest)
         {
-            var jobResponse = await _crawlerJobService.HandleJobRequest(jobRequest);
+            var jobResponse = await _seedJobService.HandleJobRequest(jobRequest);
             return Ok(jobResponse);
         }
 
         [HttpGet]
         public async Task<ActionResult<SeedJobStatusResponse>> GetJobInfo([FromQuery] string jobId)
         {
-            var jobResponse = await _crawlerJobService.GetJobInfo(jobId);
+            var jobResponse = await _seedJobService.GetJobInfo(jobId);
             return jobResponse == null 
                 ? (ActionResult) NotFound() 
                 : Ok(jobResponse);

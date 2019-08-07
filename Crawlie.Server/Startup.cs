@@ -38,7 +38,7 @@ namespace Crawlie.Server
             
             // The CrawlerJobController interacts with ICrawlerJobService to
             // post new jobs and get information about submitted jobs.
-            services.AddSingleton<ICrawlerJobService, DefaultCrawlerJobService>();
+            services.AddSingleton<ISeedJobService, DefaultSeedJobService>();
             
             // The ICrawlerRepository is used by the DefaultCrawlerJobService
             // to query and add jobs and CrawlerWorker processes to complete

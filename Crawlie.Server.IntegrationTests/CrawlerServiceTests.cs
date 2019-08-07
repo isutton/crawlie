@@ -28,7 +28,7 @@ namespace Crawlie.Server.IntegrationTests
                 }
             });
             var workerQueue = new DefaultCrawlerWorkerQueue();
-            var crawlerService = new DefaultCrawlerJobService(repository, workerQueue);
+            var crawlerService = new DefaultSeedJobService(repository, workerQueue);
             var jobRequest = new SeedJobRequest
             {
                 Uri = new Uri("https://www.redhat.com/en/topics/cloud")
@@ -51,7 +51,7 @@ namespace Crawlie.Server.IntegrationTests
             var loggerFactory = new LoggerFactory();
             var repository = new ConcurrentSeedJobRepository();
             var workerQueueMock = new Mock<ICrawlerWorkerQueue>();
-            var crawlerService = new DefaultCrawlerJobService(repository, workerQueueMock.Object);
+            var crawlerService = new DefaultSeedJobService(repository, workerQueueMock.Object);
             var targetUri = new Uri(jobId);
             var jobRequest = new SeedJobRequest
             {
@@ -85,7 +85,7 @@ namespace Crawlie.Server.IntegrationTests
             var targetUri = new Uri(jobId);
             var workerQueue = new Mock<ICrawlerWorkerQueue>();
             workerQueue.Setup(w => w.Add(targetUri));
-            var crawlerService = new DefaultCrawlerJobService(repository, workerQueue.Object);
+            var crawlerService = new DefaultSeedJobService(repository, workerQueue.Object);
             var jobRequest = new SeedJobRequest
             {
                 Uri = targetUri
