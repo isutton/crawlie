@@ -18,14 +18,14 @@ namespace Crawlie.Server.Jobs
         }
         
         [HttpPost]
-        public async Task<ActionResult<CrawlerJobResponse>> CreateJob([FromBody] SeedJobRequest jobRequest)
+        public async Task<ActionResult<SeedJobStatusResponse>> CreateJob([FromBody] SeedJobRequest jobRequest)
         {
             var jobResponse = await _crawlerJobService.HandleJobRequest(jobRequest);
             return Ok(jobResponse);
         }
 
         [HttpGet]
-        public async Task<ActionResult<CrawlerJobResponse>> GetJobInfo([FromQuery] string jobId)
+        public async Task<ActionResult<SeedJobStatusResponse>> GetJobInfo([FromQuery] string jobId)
         {
             var jobResponse = await _crawlerJobService.GetJobInfo(jobId);
             return jobResponse == null 

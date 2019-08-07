@@ -45,7 +45,7 @@ namespace Crawlie.Client
                 jobStatus = await _crawlerClient.SubmitJobRequest(jobRequest);
 
                 while (!cancellationToken.IsCancellationRequested &&
-                       jobStatus.Status != CrawlerJobResponse.JobStatus.Complete)
+                       jobStatus.Status != SeedJobStatusResponse.JobStatus.Complete)
                 {
                     await Task.Delay(500, cancellationToken);
                     

@@ -50,11 +50,11 @@ namespace Crawlie.Server.IntegrationTests
                 Uri = new Uri("https://foobar.com")
             });
             var responseContent = await result.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<CrawlerJobResponse>(responseContent);
+            var response = JsonConvert.DeserializeObject<SeedJobStatusResponse>(responseContent);
 
             // Assert
             result.EnsureSuccessStatusCode();
-            response.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
+            response.Status.Should().Be(SeedJobStatusResponse.JobStatus.InProgress);
         }
 
         [Fact]
@@ -92,11 +92,11 @@ namespace Crawlie.Server.IntegrationTests
                 Uri = new Uri("https://foobar.com")
             });
             var responseContent = await result.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<CrawlerJobResponse>(responseContent);
+            var response = JsonConvert.DeserializeObject<SeedJobStatusResponse>(responseContent);
 
             // Assert
             result.EnsureSuccessStatusCode();
-            response.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
+            response.Status.Should().Be(SeedJobStatusResponse.JobStatus.InProgress);
         }
 
         [Fact]
@@ -141,11 +141,11 @@ namespace Crawlie.Server.IntegrationTests
                 })
             );
             var responseContent = await result.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<CrawlerJobResponse>(responseContent);
+            var response = JsonConvert.DeserializeObject<SeedJobStatusResponse>(responseContent);
 
             // Assert
             result.EnsureSuccessStatusCode();
-            response.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
+            response.Status.Should().Be(SeedJobStatusResponse.JobStatus.InProgress);
         }
     }
 }

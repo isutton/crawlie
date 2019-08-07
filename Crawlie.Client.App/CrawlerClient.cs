@@ -28,7 +28,7 @@ namespace Crawlie.Client
             _httpClient.Timeout = TimeSpan.FromSeconds(2.0);
         }
 
-        public async Task<CrawlerJobResponse> SubmitJobRequest(SeedJobRequest jobRequest)
+        public async Task<SeedJobStatusResponse> SubmitJobRequest(SeedJobRequest jobRequest)
         {
             var serializedJobRequestContent = JsonConvert.SerializeObject(jobRequest);
             var jobRequestContent = new StringContent(
@@ -41,12 +41,12 @@ namespace Crawlie.Client
             response.EnsureSuccessStatusCode();
 
             var serializedJobResponse = await response.Content.ReadAsStringAsync();
-            var jobResponse = JsonConvert.DeserializeObject<CrawlerJobResponse>(serializedJobResponse);
+            var jobResponse = JsonConvert.DeserializeObject<SeedJobStatusResponse>(serializedJobResponse);
 
             return jobResponse;
         }
 
-        public async Task<CrawlerJobResponse> GetJobRequestAsync(Uri targetUri, CancellationToken cancellationToken)
+        public async Task<SeedJobStatusResponse> GetJobRequestAsync(Uri targetUri, CancellationToken cancellationToken)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace Crawlie.Client
                 response.EnsureSuccessStatusCode();
 
                 var serializedJobResponse = await response.Content.ReadAsStringAsync();
-                var jobResponse = JsonConvert.DeserializeObject<CrawlerJobResponse>(serializedJobResponse);
+                var jobResponse = JsonConvert.DeserializeObject<SeedJobStatusResponse>(serializedJobResponse);
 
                 return jobResponse;
             }

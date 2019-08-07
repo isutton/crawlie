@@ -5,8 +5,8 @@ namespace Crawlie.Server
 {
     public interface ICrawlerJobService
     {
-        Task<CrawlerJobResponse> HandleJobRequest(SeedJobRequest jobRequest);
+        Task<SeedJobStatusResponse> HandleJobRequest(SeedJobRequest jobRequest);
         
-        Task<CrawlerJobResponse> GetJobInfo(string jobId);
+        Task<SeedJobStatusResponse> GetJobInfo(string jobId);
     }
 }

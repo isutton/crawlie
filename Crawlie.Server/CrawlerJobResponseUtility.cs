@@ -5,21 +5,21 @@ namespace Crawlie.Server
 {
     public static class CrawlerJobResponseUtility
     {
-        private static readonly Dictionary<SeedJobStatus.WorkerStatus, CrawlerJobResponse.JobStatus> StatusMapping = new Dictionary<SeedJobStatus.WorkerStatus, CrawlerJobResponse.JobStatus>()
+        private static readonly Dictionary<SeedJobStatus.WorkerStatus, SeedJobStatusResponse.JobStatus> StatusMapping = new Dictionary<SeedJobStatus.WorkerStatus, SeedJobStatusResponse.JobStatus>()
         {
-            {SeedJobStatus.WorkerStatus.Accepted, CrawlerJobResponse.JobStatus.InProgress},
-            {SeedJobStatus.WorkerStatus.InProgress, CrawlerJobResponse.JobStatus.InProgress},
-            {SeedJobStatus.WorkerStatus.Complete, CrawlerJobResponse.JobStatus.Complete}
+            {SeedJobStatus.WorkerStatus.Accepted, SeedJobStatusResponse.JobStatus.InProgress},
+            {SeedJobStatus.WorkerStatus.InProgress, SeedJobStatusResponse.JobStatus.InProgress},
+            {SeedJobStatus.WorkerStatus.Complete, SeedJobStatusResponse.JobStatus.Complete}
         };
 
-        public static CrawlerJobResponse NewFromExistingJobInfo(SeedJobStatus existingJobStatus)
+        public static SeedJobStatusResponse NewFromExistingJobInfo(SeedJobStatus existingJobStatus)
         {
             var status = StatusMapping
                 .TryGetValue(existingJobStatus.Status, out var mappedStatus) 
                 ? mappedStatus 
-                : CrawlerJobResponse.JobStatus.Unknown;
+                : SeedJobStatusResponse.JobStatus.Unknown;
 
-            return new CrawlerJobResponse
+            return new SeedJobStatusResponse
             {
                 Id = existingJobStatus.Id,
                 Status = status,

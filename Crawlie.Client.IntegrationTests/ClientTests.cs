@@ -75,7 +75,7 @@ namespace Crawlie.Client.IntegrationTests
             var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
 
             // Assert
-            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
+            jobResponse.Status.Should().Be(SeedJobStatusResponse.JobStatus.InProgress);
         }
 
         [Fact]
@@ -131,7 +131,7 @@ namespace Crawlie.Client.IntegrationTests
             var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
 
             // Assert
-            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
+            jobResponse.Status.Should().Be(SeedJobStatusResponse.JobStatus.InProgress);
         }
 
         [Fact]
@@ -190,7 +190,7 @@ namespace Crawlie.Client.IntegrationTests
             var jobResponse = await crawlerClient.SubmitJobRequest(jobRequest);
 
             // Assert
-            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.Complete);
+            jobResponse.Status.Should().Be(SeedJobStatusResponse.JobStatus.Complete);
         }
 
         [Fact]
@@ -275,7 +275,7 @@ namespace Crawlie.Client.IntegrationTests
             var jobResponse = await crawlerClient.GetJobRequestAsync(targetUri, CancellationToken.None);
 
             // Assert
-            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
+            jobResponse.Status.Should().Be(SeedJobStatusResponse.JobStatus.InProgress);
         }
 
 
@@ -330,7 +330,7 @@ namespace Crawlie.Client.IntegrationTests
             var jobResponse = await crawlerClient.GetJobRequestAsync(targetUri, CancellationToken.None);
 
             // Assert
-            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.Complete);
+            jobResponse.Status.Should().Be(SeedJobStatusResponse.JobStatus.Complete);
         }
     }
 }

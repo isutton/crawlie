@@ -38,7 +38,7 @@ namespace Crawlie.Server.IntegrationTests
             var jobResponse = await crawlerService.HandleJobRequest(jobRequest);
 
             // Assert
-            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.Complete);
+            jobResponse.Status.Should().Be(SeedJobStatusResponse.JobStatus.Complete);
             jobResponse.Result.Should().BeEquivalentTo(resultList);
         }
 
@@ -63,7 +63,7 @@ namespace Crawlie.Server.IntegrationTests
 
 
             // Assert
-            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
+            jobResponse.Status.Should().Be(SeedJobStatusResponse.JobStatus.InProgress);
             workerQueueMock.Verify(w => w.Add(targetUri));
         }
 
@@ -96,7 +96,7 @@ namespace Crawlie.Server.IntegrationTests
 
 
             // Assert
-            jobResponse.Status.Should().Be(CrawlerJobResponse.JobStatus.InProgress);
+            jobResponse.Status.Should().Be(SeedJobStatusResponse.JobStatus.InProgress);
         }
     }
 }

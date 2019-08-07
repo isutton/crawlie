@@ -17,7 +17,7 @@ namespace Crawlie.Server
             _workerQueue = workerQueue;
         }
 
-        public async Task<CrawlerJobResponse> HandleJobRequest(SeedJobRequest jobRequest)
+        public async Task<SeedJobStatusResponse> HandleJobRequest(SeedJobRequest jobRequest)
         {
             var existingJobInfo = await _repository.GetJobInfoAsync(jobRequest.Uri);
             if (existingJobInfo != null)
@@ -34,7 +34,7 @@ namespace Crawlie.Server
             return CrawlerJobResponseUtility.NewFromExistingJobInfo(addedJobInfo);
         }
 
-        public async Task<CrawlerJobResponse> GetJobInfo(string jobId)
+        public async Task<SeedJobStatusResponse> GetJobInfo(string jobId)
         {
             var jobInfo = await _repository.GetJobInfoAsync(new Uri(jobId));
 
