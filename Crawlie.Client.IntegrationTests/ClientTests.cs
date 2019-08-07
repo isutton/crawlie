@@ -89,7 +89,7 @@ namespace Crawlie.Client.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         var repository =
-                            new ConcurrentSeedJobRepository();
+                            new InMemorySeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -145,7 +145,7 @@ namespace Crawlie.Client.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         var repository =
-                            new ConcurrentSeedJobRepository();
+                            new InMemorySeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -235,7 +235,7 @@ namespace Crawlie.Client.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         var repository =
-                            new ConcurrentSeedJobRepository();
+                            new InMemorySeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -290,7 +290,7 @@ namespace Crawlie.Client.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         var repository =
-                            new ConcurrentSeedJobRepository();
+                            new InMemorySeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus

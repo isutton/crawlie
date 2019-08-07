@@ -11,7 +11,7 @@ namespace Crawlie.Server
     ///     ConcurrentCrawlerRepository is a repository that store current and
     ///     past crawler job results.
     /// </summary>
-    public class ConcurrentSeedJobRepository : ISeedJobRepository
+    public class InMemorySeedJobRepository : ISeedJobRepository
     {
         private readonly ConcurrentDictionary<string, SeedJobStatus> _jobCollection =
             new ConcurrentDictionary<string, SeedJobStatus>();

@@ -43,7 +43,7 @@ namespace Crawlie.Server
             // The ICrawlerRepository is used by the DefaultCrawlerJobService
             // to query and add jobs and CrawlerWorker processes to complete
             // their jobs.
-            services.AddSingleton<ISeedJobRepository, ConcurrentSeedJobRepository>();
+            services.AddSingleton<ISeedJobRepository, InMemorySeedJobRepository>();
             
             // The CrawlerJobController pumps requests in the ICrawlerWorkerQueue,
             // which in turn are consumed by CrawlerWorker processes.

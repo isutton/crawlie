@@ -68,7 +68,7 @@ namespace Crawlie.Server.IntegrationTests
                     {
                         var loggerFactory = new LoggerFactory();
                         var repository =
-                            new ConcurrentSeedJobRepository();
+                            new InMemorySeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -114,7 +114,7 @@ namespace Crawlie.Server.IntegrationTests
                         services.AddTransient<ICrawlerBackgroundService, NoopCrawlerBackgroundService>();
                         var loggerFactory = new LoggerFactory();
                         var repository =
-                            new ConcurrentSeedJobRepository();
+                            new InMemorySeedJobRepository();
 
                         repository.TryAddRange(new[]
                             {
