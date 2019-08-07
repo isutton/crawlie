@@ -6,11 +6,11 @@ namespace Crawlie.Server
 {
     public class DefaultCrawlerJobService : ICrawlerJobService
     {
-        private readonly ICrawlerRepository _repository;
+        private readonly ISeedJobRepository _repository;
         private readonly ICrawlerWorkerQueue _workerQueue;
 
         public DefaultCrawlerJobService(
-            ICrawlerRepository repository,
+            ISeedJobRepository repository,
             ICrawlerWorkerQueue workerQueue)
         {
             _repository = repository;

@@ -33,7 +33,7 @@ namespace Crawlie.Server.IntegrationTests
             
             var workerQueueMock = new Mock<ICrawlerWorkerQueue>();
 
-            var repositoryMock = new Mock<ICrawlerRepository>();
+            var repositoryMock = new Mock<ISeedJobRepository>();
             repositoryMock
                 .Setup(r =>
                     r.CompleteJob(
@@ -93,7 +93,7 @@ namespace Crawlie.Server.IntegrationTests
             ICrawlerWorkerQueue workerQueue = new DefaultCrawlerWorkerQueue();
             workerQueue.Add(targetUri);
             
-            var repositoryMock = new Mock<ICrawlerRepository>();
+            var repositoryMock = new Mock<ISeedJobRepository>();
             repositoryMock
                 .Setup(r =>
                     r.CompleteJob(

@@ -14,12 +14,12 @@ namespace Crawlie.Server
         private readonly ICrawlerEngine _crawlerEngine;
         private readonly IDocumentFetcher _documentFetcher;
         private readonly ILogger<CrawlerWorker> _logger;
-        private readonly ICrawlerRepository _repository;
+        private readonly ISeedJobRepository _repository;
         private readonly ICrawlerWorkerQueue _workerQueue;
 
         public CrawlerWorker(
             IDocumentFetcher documentFetcher,
-            ICrawlerRepository repository,
+            ISeedJobRepository repository,
             ICrawlerEngine crawlerEngine,
             ICrawlerWorkerQueue workerQueue,
             ILogger<CrawlerWorker> logger,

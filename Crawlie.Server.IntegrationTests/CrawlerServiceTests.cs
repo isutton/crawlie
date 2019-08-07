@@ -17,7 +17,7 @@ namespace Crawlie.Server.IntegrationTests
             // Arrange
             var resultList = new List<Uri> {new Uri("https://www.redhat.com")};
             var loggerFactory = new LoggerFactory();
-            var repository = new ConcurrentCrawlerRepository();
+            var repository = new ConcurrentSeedJobRepository();
             repository.TryAddRange(new[]
             {
                 new SeedJobStatus
@@ -49,7 +49,7 @@ namespace Crawlie.Server.IntegrationTests
             const string jobId = "https://www.redhat.com/en/topics/cloud";
 
             var loggerFactory = new LoggerFactory();
-            var repository = new ConcurrentCrawlerRepository();
+            var repository = new ConcurrentSeedJobRepository();
             var workerQueueMock = new Mock<ICrawlerWorkerQueue>();
             var crawlerService = new DefaultCrawlerJobService(repository, workerQueueMock.Object);
             var targetUri = new Uri(jobId);
@@ -73,7 +73,7 @@ namespace Crawlie.Server.IntegrationTests
             // Arrange
             const string jobId = "https://www.redhat.com/en/topics/cloud";
             var loggerFactory = new LoggerFactory();
-            var repository = new ConcurrentCrawlerRepository();
+            var repository = new ConcurrentSeedJobRepository();
             repository.TryAddRange(new[]
             {
                 new SeedJobStatus

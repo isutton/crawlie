@@ -89,7 +89,7 @@ namespace Crawlie.Client.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         var repository =
-                            new ConcurrentCrawlerRepository();
+                            new ConcurrentSeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -100,7 +100,7 @@ namespace Crawlie.Client.IntegrationTests
                                 }
                             }
                         );
-                        services.AddSingleton<ICrawlerRepository>(repository);
+                        services.AddSingleton<ISeedJobRepository>(repository);
                     });
                 })
                 .CreateClient();
@@ -145,7 +145,7 @@ namespace Crawlie.Client.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         var repository =
-                            new ConcurrentCrawlerRepository();
+                            new ConcurrentSeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -156,7 +156,7 @@ namespace Crawlie.Client.IntegrationTests
                                 }
                             }
                         );
-                        services.AddSingleton<ICrawlerRepository>(repository);
+                        services.AddSingleton<ISeedJobRepository>(repository);
                     });
                 })
                 .CreateClient();
@@ -235,7 +235,7 @@ namespace Crawlie.Client.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         var repository =
-                            new ConcurrentCrawlerRepository();
+                            new ConcurrentSeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -246,7 +246,7 @@ namespace Crawlie.Client.IntegrationTests
                                 }
                             }
                         );
-                        services.AddSingleton<ICrawlerRepository>(repository);
+                        services.AddSingleton<ISeedJobRepository>(repository);
                     });
                 })
                 .CreateClient();
@@ -290,7 +290,7 @@ namespace Crawlie.Client.IntegrationTests
                     builder.ConfigureTestServices(services =>
                     {
                         var repository =
-                            new ConcurrentCrawlerRepository();
+                            new ConcurrentSeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -301,7 +301,7 @@ namespace Crawlie.Client.IntegrationTests
                                 }
                             }
                         );
-                        services.AddSingleton<ICrawlerRepository>(repository);
+                        services.AddSingleton<ISeedJobRepository>(repository);
                     });
                 })
                 .CreateClient();

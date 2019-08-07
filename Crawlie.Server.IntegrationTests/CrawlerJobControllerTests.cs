@@ -68,7 +68,7 @@ namespace Crawlie.Server.IntegrationTests
                     {
                         var loggerFactory = new LoggerFactory();
                         var repository =
-                            new ConcurrentCrawlerRepository();
+                            new ConcurrentSeedJobRepository();
                         repository.TryAddRange(new[]
                             {
                                 new SeedJobStatus
@@ -79,7 +79,7 @@ namespace Crawlie.Server.IntegrationTests
                                 }
                             }
                         );
-                        services.AddSingleton<ICrawlerRepository>(repository);
+                        services.AddSingleton<ISeedJobRepository>(repository);
                         services.Remove(new ServiceDescriptor(typeof(CrawlerBackgroundService),
                             typeof(CrawlerBackgroundService)));
                     });
@@ -114,7 +114,7 @@ namespace Crawlie.Server.IntegrationTests
                         services.AddTransient<ICrawlerBackgroundService, NoopCrawlerBackgroundService>();
                         var loggerFactory = new LoggerFactory();
                         var repository =
-                            new ConcurrentCrawlerRepository();
+                            new ConcurrentSeedJobRepository();
 
                         repository.TryAddRange(new[]
                             {
@@ -126,7 +126,7 @@ namespace Crawlie.Server.IntegrationTests
                                 }
                             }
                         );
-                        services.AddSingleton<ICrawlerRepository>(repository);
+                        services.AddSingleton<ISeedJobRepository>(repository);
                         services.Remove(new ServiceDescriptor(typeof(CrawlerBackgroundService),
                             typeof(CrawlerBackgroundService)));
                     });

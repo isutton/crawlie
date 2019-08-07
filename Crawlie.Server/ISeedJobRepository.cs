@@ -5,7 +5,7 @@ using Crawlie.Contracts;
 
 namespace Crawlie.Server
 {
-    public interface ICrawlerRepository
+    public interface ISeedJobRepository
     {
         Task<SeedJobStatus> GetJobInfoAsync(Uri targetUri);
         
