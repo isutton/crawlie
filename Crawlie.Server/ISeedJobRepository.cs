@@ -7,7 +7,7 @@ namespace Crawlie.Server
 {
     public interface ISeedJobRepository
     {
-        Task<SeedJobStatus> GetJobInfoAsync(Uri targetUri);
+        Task<SeedJobStatus> GetSeedJobStatusAsync(Uri seedUri);
         
         Task<SeedJobStatus> AddJobRequestAsync(SeedJobRequest jobRequest);
         

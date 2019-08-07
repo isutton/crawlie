@@ -19,7 +19,7 @@ namespace Crawlie.Server
 
         public async Task<SeedJobStatusResponse> HandleJobRequest(SeedJobRequest jobRequest)
         {
-            var existingJobInfo = await _repository.GetJobInfoAsync(jobRequest.Uri);
+            var existingJobInfo = await _repository.GetSeedJobStatusAsync(jobRequest.Uri);
             if (existingJobInfo != null)
                 // Requested URL is in progress or finished, map jobInfo
                 // to a response.
@@ -36,7 +36,7 @@ namespace Crawlie.Server
 
         public async Task<SeedJobStatusResponse> GetJobInfo(string jobId)
         {
-            var jobInfo = await _repository.GetJobInfoAsync(new Uri(jobId));
+            var jobInfo = await _repository.GetSeedJobStatusAsync(new Uri(jobId));
 
 
             return

@@ -16,9 +16,9 @@ namespace Crawlie.Server
         private readonly ConcurrentDictionary<string, SeedJobStatus> _jobCollection =
             new ConcurrentDictionary<string, SeedJobStatus>();
 
-        public Task<SeedJobStatus> GetJobInfoAsync(Uri targetUri)
+        public Task<SeedJobStatus> GetSeedJobStatusAsync(Uri seedUri)
         {
-            return _jobCollection.TryGetValue(targetUri.ToString(), out var jobInfo)
+            return _jobCollection.TryGetValue(seedUri.ToString(), out var jobInfo)
                 ? Task.FromResult(jobInfo)
                 : Task.FromResult<SeedJobStatus>(null);
         }
